@@ -7,6 +7,8 @@ import com.fpt.MidtermG1.dto.InvoiceProductDTO;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -24,8 +26,8 @@ import lombok.NoArgsConstructor;
 @Builder
 public class InvoiceProduct {
     @Id
-    @Column(length = 36)
-    private String id;
+    @GeneratedValue(strategy=GenerationType.SEQUENCE)
+    private int id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "invoice_id", nullable = false)

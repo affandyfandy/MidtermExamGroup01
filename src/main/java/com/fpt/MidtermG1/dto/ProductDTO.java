@@ -20,7 +20,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class ProductDTO {
-    private String id;
+    private int id;
     private String name;
     private BigDecimal price;
     private Status status;

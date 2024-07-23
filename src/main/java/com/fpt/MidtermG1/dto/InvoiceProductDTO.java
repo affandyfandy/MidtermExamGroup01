@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class InvoiceProductDTO {
-    private String id;
+    private int id;
     private InvoiceDTO invoice;
     private ProductDTO product;
     private int quantity;
