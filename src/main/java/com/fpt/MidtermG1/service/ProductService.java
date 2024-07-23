@@ -6,6 +6,7 @@ import com.fpt.MidtermG1.data.repository.ProductRepository;
 import com.fpt.MidtermG1.dto.InvoiceProductDTO;
 import com.fpt.MidtermG1.dto.ProductDTO;
 import com.fpt.MidtermG1.exception.ResourceNotFoundException;
+import com.fpt.MidtermG1.specifications.ProductSpecificationsBuilder;
 import com.fpt.MidtermG1.util.ExcelUtil;
 import lombok.AllArgsConstructor;
 import org.apache.poi.ss.usermodel.Row;
@@ -13,6 +14,9 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -22,6 +26,8 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @Service
@@ -30,11 +36,17 @@ public class ProductService {
     @Autowired
     private final ProductRepository productRepository;
 
-    public List<ProductDTO> listAllProduct(){
-        List<Product> products = productRepository.findAll();
-        return products.stream()
-                .map(Product::toDTO)
-                .collect(Collectors.toList());
+    public Page<ProductDTO> listAllProduct(Pageable pageable, String search) {
+        ProductSpecificationsBuilder builder = new ProductSpecificationsBuilder();
+        Pattern pattern = Pattern.compile("(\\w+?)(:|<|>)(\\w+?),");
+        Matcher matcher = pattern.matcher(search + ",");
+        while (matcher.find()) {
+            builder.with(matcher.group(1), matcher.group(2), matcher.group(3));
+        }
+
+        Specification<Product> spec = builder.build();
+        Page<Product> products = productRepository.findAll(spec, pageable);
+        return products.map(Product::toDTO);
     }
 
     public Optional<ProductDTO> findProductById(int id){
