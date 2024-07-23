@@ -86,7 +86,7 @@ public class ProductService {
         }
     }
 
-    public void importExcel(InputStream inputStream) throws IOException {
+    public void importExcel(InputStream inputStream) throws Exception {
         List<Product> products = ExcelUtil.parseProductFile(inputStream);
         productRepository.saveAll(products);
     }
