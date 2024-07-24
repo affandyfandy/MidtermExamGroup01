@@ -17,6 +17,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -32,12 +34,12 @@ import lombok.NoArgsConstructor;
 public class Customer {
     @Id
     @GeneratedValue(strategy=GenerationType.UUID)
-    @Column(length = 36)
+    @Column(length = 36, updatable = false, nullable = false)
     private String id;
 
     @Column(nullable = false, length = 255)
     private String name;
-
+    
     @Column(name = "phone_number", nullable = false, length = 20)
     private String phoneNumber;
 
@@ -53,6 +55,17 @@ public class Customer {
 
     @OneToMany(mappedBy = "customer", fetch = FetchType.LAZY)
     private Set<Invoice> invoices;
+
+    @PrePersist
+    protected void onCreate() {
+        this.createdTime = new Timestamp(System.currentTimeMillis());
+        this.updatedTime = new Timestamp(System.currentTimeMillis());
+    }
+
+    @PreUpdate
+    public void preUpdate() {
+        this.updatedTime = new Timestamp(System.currentTimeMillis());
+    }
 
     public CustomerDTO toDTO() {
         return CustomerDTO.builder()
