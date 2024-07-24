@@ -20,7 +20,7 @@ This project is a simple web application built using Spring Boot for managing cu
 
 
 ### Business Flow Diagram
-
+![img_1.png](img_1.png)
 
 ### Class Diagram
 ![img.png](img.png)
@@ -33,3 +33,5 @@ This project is a simple web application built using Spring Boot for managing cu
 ### API List
 When the app is running, the API list can be seen at `http://localhost:8080/swagger-ui/index.html`
 
+### Insert Inital Data
+For initial data, use [init.sql](file%2Finit.sql)
