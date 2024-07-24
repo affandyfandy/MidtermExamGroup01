@@ -2,6 +2,9 @@ package com.fpt.MidtermG1.controller;
 
 import com.fpt.MidtermG1.dto.ProductDTO;
 import com.fpt.MidtermG1.service.ProductService;
+import com.fpt.MidtermG1.service.impl.ProductServiceImpl;
+import jakarta.validation.Valid;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -17,9 +20,9 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("api/v1/products")
+@AllArgsConstructor
 public class ProductController {
-    @Autowired
-    private ProductService productService;
+    private final ProductService productService;
 
     @GetMapping
     public Page<ProductDTO> getAllProducts(@RequestParam(defaultValue = "0") int page,
@@ -33,13 +36,13 @@ public class ProductController {
     }
 
     @PostMapping
-    public ResponseEntity<ProductDTO> addProduct(@RequestBody ProductDTO productDTO) {
+    public ResponseEntity<ProductDTO> addProduct(@RequestBody @Valid ProductDTO productDTO) {
         ProductDTO savedProduct = productService.saveProduct(productDTO);
         return new ResponseEntity<>(savedProduct, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ProductDTO> editProduct(@PathVariable int id, @RequestBody ProductDTO productDTO) {
+    public ResponseEntity<ProductDTO> editProduct(@PathVariable int id, @RequestBody @Valid ProductDTO productDTO) {
         Optional<ProductDTO> updatedProduct = productService.updateProduct(id, productDTO);
         return updatedProduct.map(productDTO1 -> new ResponseEntity<>(productDTO1, HttpStatus.OK))
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
