@@ -19,18 +19,12 @@ import lombok.NoArgsConstructor;
 @IdClass(InvoiceProductId.class)
 public class InvoiceProduct {
     @Id
-    @GeneratedValue(strategy=GenerationType.SEQUENCE)
-    private int id;
+    @Column(name = "invoice_id")
+    private String invoice_id;
 
     @Id
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "invoice_id", nullable = false)
-    private Invoice invoice;
-
-    @Id
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "product_id", nullable = false)
-    private Product product;
+    @Column(name = "product_id")
+    private int product_id;
 
     @Column(nullable = false)
     private int quantity;
@@ -41,9 +35,16 @@ public class InvoiceProduct {
     @Column(nullable = false)
     private BigDecimal amount;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "invoice_id", nullable = false)
+    private Invoice invoice;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "product_id", nullable = false)
+    private Product product;
+
     public InvoiceProductDTO toDTO() {
         return InvoiceProductDTO.builder()
-                .id(this.getId())
                 .invoice(this.getInvoice() != null ? this.getInvoice().toDTO() : null)
                 .product(this.getProduct() != null ? this.getProduct().toDTO() : null)
                 .quantity(this.getQuantity())
