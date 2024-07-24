@@ -1,7 +1,7 @@
 package com.fpt.MidtermG1.controller;
 
 import com.fpt.MidtermG1.dto.ProductDTO;
-import com.fpt.MidtermG1.service.ProductService;
+import com.fpt.MidtermG1.service.impl.ProductServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -19,7 +19,7 @@ import java.util.Optional;
 @RequestMapping("api/v1/products")
 public class ProductController {
     @Autowired
-    private ProductService productService;
+    private ProductServiceImpl productService;
 
     @GetMapping
     public Page<ProductDTO> getAllProducts(@RequestParam(defaultValue = "0") int page,
