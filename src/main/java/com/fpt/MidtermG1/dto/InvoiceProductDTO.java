@@ -14,7 +14,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class InvoiceProductDTO {
-    private int id;
     private InvoiceDTO invoice;
     private ProductDTO product;
     private int quantity;
@@ -23,7 +22,6 @@ public class InvoiceProductDTO {
 
     public InvoiceProduct toEntity() {
         return InvoiceProduct.builder()
-                .id(this.getId())
                 .invoice(this.getInvoice() != null ? this.getInvoice().toEntity() : null)
                 .product(this.getProduct() != null ? this.getProduct().toEntity() : null)
                 .quantity(this.getQuantity())
