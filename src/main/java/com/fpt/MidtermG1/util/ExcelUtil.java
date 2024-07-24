@@ -32,12 +32,11 @@ public class ExcelUtil {
                 }
 
                 Product product = new Product();
-                product.setId(getCellValueAsInt(row.getCell(0)));
-                product.setName(getCellValueAsString(row.getCell(1)));
-                product.setPrice(getCellValueAsBigDecimal(row.getCell(2)));
-                product.setStatus(getCellValueAsStatus(row.getCell(3)));
-                product.setCreatedTime(getCellValueAsTimestamp(row.getCell(4)));
-                product.setUpdatedTime(getCellValueAsTimestamp(row.getCell(5)));
+                product.setName(getCellValueAsString(row.getCell(0)));
+                product.setPrice(getCellValueAsBigDecimal(row.getCell(1)));
+                product.setStatus(getCellValueAsStatus(row.getCell(2)));
+                product.setCreatedTime(getCellValueAsTimestamp(row.getCell(3)));
+                product.setUpdatedTime(getCellValueAsTimestamp(row.getCell(4)));
                 products.add(product);
             }
         }
