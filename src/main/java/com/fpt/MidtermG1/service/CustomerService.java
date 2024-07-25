@@ -13,4 +13,6 @@ public interface CustomerService {
     Optional<CustomerDTO> getCusromerById(String id);
     CustomerDTO addCustomer(CustomerDTO body);
     CustomerDTO editCustomer(String id, CustomerDTO body);
+    CustomerDTO activateCustomer(String id);
+    CustomerDTO deactivateCustomer(String id);
 }
