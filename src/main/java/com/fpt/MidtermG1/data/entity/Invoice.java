@@ -17,6 +17,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -53,6 +55,17 @@ public class Invoice {
 
     @OneToMany(mappedBy = "invoice", fetch = FetchType.LAZY)
     private Set<InvoiceProduct> invoiceProducts;
+
+    @PrePersist
+    protected void onCreate() {
+        this.createdTime = new Timestamp(System.currentTimeMillis());
+        this.updatedTime = new Timestamp(System.currentTimeMillis());
+    }
+
+    @PreUpdate
+    public void preUpdate() {
+        this.updatedTime = new Timestamp(System.currentTimeMillis());
+    }
 
     public InvoiceDTO toDTO() {
         return InvoiceDTO.builder()
