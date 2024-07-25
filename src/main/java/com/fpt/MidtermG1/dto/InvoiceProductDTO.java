@@ -1,6 +1,7 @@
 package com.fpt.MidtermG1.dto;
 
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 import java.util.Optional;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -34,6 +35,9 @@ public class InvoiceProductDTO {
     @DecimalMin(value = "0.0", inclusive = false, message = "Amount must be greater than 0")
     private BigDecimal amount;
 
+    private Timestamp createdTime;
+    private Timestamp updatedTime;
+
     public InvoiceProduct toEntity() {
         InvoiceProduct invoiceProduct = new InvoiceProduct();
         invoiceProduct.setInvoice(Optional.ofNullable(invoice).map(InvoiceDTO::toEntity).orElse(null));
@@ -41,6 +45,8 @@ public class InvoiceProductDTO {
         invoiceProduct.setQuantity(quantity);
         invoiceProduct.setPrice(price);
         invoiceProduct.setAmount(amount);
+        invoiceProduct.setCreatedTime(createdTime);
+        invoiceProduct.setUpdatedTime(updatedTime);
         return invoiceProduct;
     }
 }
