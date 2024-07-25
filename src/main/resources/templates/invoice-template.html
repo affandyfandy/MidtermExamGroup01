@@ -6,8 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Invoice</title>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+
         body {
-            font-family: 'Arial', sans-serif;
+            font-family: 'Roboto', sans-serif;
             margin: 0;
             padding: 20px;
             color: #333;
@@ -18,39 +20,52 @@
             max-width: 800px;
             margin: auto;
             background: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
         }
 
         h1,
         h2,
         h3 {
-            color: #027ebc;
+            color: #382e77;
         }
 
         h1 {
             text-align: center;
+            margin-bottom: 30px;
         }
 
         h3 {
-            margin-top: 40px;
+            margin-top: 30px;
+            border-bottom: 2px solid #1b1a1d;
+            padding-bottom: 10px;
         }
 
         .info {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 20px;
-            font-size: 0.9em;
-            /* Smaller font size */
-            color: #027ebc;
-            /* Blue color for labels */
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            font-size: 1em;
+            color: #333;
         }
 
-        .info span {
-            color: #000;
-            /* Black color for IDs */
+        .info>div {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 20px;
+        }
+
+        .info h4 {
+            margin: 0;
+            font-weight: 400;
+            color: #555;
+        }
+
+        .info .value {
+            font-size: 1.2em;
             font-weight: bold;
+            color: #000;
         }
 
         table {
@@ -61,20 +76,27 @@
 
         th,
         td {
-            padding: 10px;
+            padding: 15px;
             border: 1px solid #ddd;
             text-align: left;
         }
 
         th {
-            background-color: #027ebc;
+            background-color: #232327;
             color: #fff;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
         }
 
         .total {
             text-align: right;
             font-size: 1.5em;
             font-weight: bold;
+            margin-top: 20px;
+            border-top: 2px solid #ddd;
+            padding-top: 10px;
         }
 
         .footer {
@@ -95,19 +117,26 @@
         <h1>Invoice</h1>
         <div class="info">
             <div>
-                <h4>Invoice ID: <span th:text="${invoice.id}"></span></h4>
-                <h4>Date: <span th:text="${invoice.invoiceDate}"></span></h4>
+                <h4>Invoice ID</h4>
+                <div class="value" th:text="${invoice.id}"></div>
             </div>
             <div>
-                <h4>Customer ID: <span th:text="${customer.id}"></span></h4>
-                <h4>Customer Name: <span th:text="${customer.name}"></span></h4>
+                <h4>Date</h4>
+                <div class="value" th:text="${#dates.format(invoice.invoiceDate, 'MMMM dd, yyyy')}"></div>
+            </div>
+            <div>
+                <h4>Customer ID</h4>
+                <div class="value" th:text="${customer.id}"></div>
+            </div>
+            <div>
+                <h4>Customer Name</h4>
+                <div class="value" th:text="${customer.name}"></div>
             </div>
         </div>
         <h3>Details</h3>
         <table>
             <thead>
                 <tr>
-                    <th>Product ID</th>
                     <th>Product Name</th>
                     <th>Quantity</th>
                     <th>Price</th>
@@ -116,7 +145,6 @@
             </thead>
             <tbody>
                 <tr th:each="detail : ${invoice.invoiceProducts}">
-                    <td th:text="${detail.id.productId}"></td>
                     <td th:text="${detail.productName}"></td>
                     <td th:text="${detail.quantity}"></td>
                     <td th:text="${detail.price}"></td>
