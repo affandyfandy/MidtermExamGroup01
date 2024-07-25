@@ -1,8 +1,17 @@
 package com.fpt.MidtermG1.controller;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.math.BigDecimal;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
+import com.fpt.MidtermG1.dto.RevenueReportDTO;
+import com.fpt.MidtermG1.util.ExcelUtil;
 
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.ContentDisposition;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -20,6 +29,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fpt.MidtermG1.dto.InvoiceDTO;
 import com.fpt.MidtermG1.dto.InvoiceProductDTO;
 import com.fpt.MidtermG1.service.InvoiceService;
+import com.fpt.MidtermG1.util.ExcelUtil;
 
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -78,15 +88,66 @@ public ResponseEntity<InvoiceDTO> addInvoice(@RequestBody InvoiceDTO invoiceDTO)
         List<InvoiceDTO> invoices = invoiceService.getInvoicesByCriteria(customerId, customerName, year, month, invoiceAmountCondition, invoiceAmount, page, size);
         return ResponseEntity.ok(invoices);
     }
+
     @GetMapping("export/{id}")
-    public ResponseEntity<byte[]> exportToPDF(@PathVariable String id) {
-        byte[] pdfBytes = invoiceService.exportInvoiceToPDF(id);
+public ResponseEntity<String> exportToPDF(@PathVariable String id) {
+    byte[] pdfBytes = invoiceService.exportInvoiceToPDF(id);
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_PDF);
-        headers.setContentDisposition(ContentDisposition.builder("attachment").filename("invoice.pdf").build());
+    // Determine the path for saving the file
+    Path path = Paths.get("src/main/resources/invoices.pdf");
+    File file = path.toFile();
+    
+    // Save file to resources folder
+    try (FileOutputStream fos = new FileOutputStream(file)) {
+        fos.write(pdfBytes);
+    } catch (IOException e) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error saving file: " + e.getMessage());
+    }
 
-        return ResponseEntity.status(HttpStatus.OK).headers(headers).body(pdfBytes);
+    // Return a response indicating the file was saved
+    HttpHeaders headers = new HttpHeaders();
+    headers.add("Content-Type", "text/plain");
+    return ResponseEntity.ok().headers(headers).body("File saved to " + path.toAbsolutePath());
+}
+
+    
+    
+
+    @GetMapping("/export-excel")
+public ResponseEntity<String> exportInvoicesToExcel(@RequestParam(required = false) String customerId,
+                                                     @RequestParam(required = false) String customerName,
+                                                     @RequestParam(required = false) Integer year,
+                                                     @RequestParam(required = false) Integer month,
+                                                     @RequestParam(required = false) String invoiceAmountCondition,
+                                                     @RequestParam(required = false) BigDecimal invoiceAmount) throws IOException {
+    // Retrieve invoices based on criteria
+    List<InvoiceDTO> invoices = invoiceService.getInvoicesByCriteria(
+            customerId, customerName, year != null ? year : 0, month != null ? month : 0, invoiceAmountCondition, invoiceAmount, 0, Integer.MAX_VALUE);
+
+    // Generate Excel content
+    byte[] excelContent = ExcelUtil.exportInvoicesToExcel(invoices);
+
+    // Determine the path for saving the file
+    Path path = Paths.get("src/main/resources/invoices.xlsx");
+    File file = path.toFile();
+    
+    // Save file to resources folder
+    try (FileOutputStream fos = new FileOutputStream(file)) {
+        fos.write(excelContent);
+    }
+
+    // Return a response indicating the file was saved
+    HttpHeaders headers = new HttpHeaders();
+    headers.add("Content-Type", "text/plain");
+    return ResponseEntity.ok().headers(headers).body("File saved to " + path.toAbsolutePath());
+}
+
+
+    @GetMapping("/report")
+    public List<RevenueReportDTO> getRevenueReport(@RequestParam(required = false) Integer year,
+                                                   @RequestParam(required = false) Integer month,
+                                                   @RequestParam(required = false) Integer day) {
+        return invoiceService.getRevenueByPeriod(year, month, day);
     }
 
 }

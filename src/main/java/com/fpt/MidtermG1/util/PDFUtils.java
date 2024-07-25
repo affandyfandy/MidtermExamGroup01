@@ -15,7 +15,7 @@ import lombok.AllArgsConstructor;
 @Component
 @AllArgsConstructor
 public class PDFUtils {
-    
+
     private final SpringTemplateEngine springTemplateEngine;
 
     public byte[] generateInvoicePDF(Invoice invoice) throws IOException {
