@@ -10,6 +10,7 @@ import com.fpt.MidtermG1.data.entity.Customer;
 import com.fpt.MidtermG1.data.repository.CustomerRepository;
 import com.fpt.MidtermG1.data.specification.CustomerSpecification;
 import com.fpt.MidtermG1.dto.CustomerDTO;
+import com.fpt.MidtermG1.exception.ResourceNotFoundException;
 import com.fpt.MidtermG1.service.CustomerService;
 
 import jakarta.validation.Valid;
@@ -36,7 +37,12 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public Optional<CustomerDTO> getCusromerById(String id) {
-        return customerRepository.findById(id).map(Customer::toDTO);
+        Optional<Customer> customerOpt = customerRepository.findById(id);
+        if (customerOpt.isEmpty()) {
+            throw new ResourceNotFoundException("Customer not found for this id : " + id);
+        } else {
+            return customerOpt.map(Customer::toDTO);
+        }
     }
 
     @Override
@@ -67,7 +73,7 @@ public class CustomerServiceImpl implements CustomerService {
             customer = customerRepository.save(customer);
             return customer.toDTO();
         } else {
-            throw new RuntimeException("Customer not found with id: " + id);
+            throw new ResourceNotFoundException("Customer not found for this id : " + id);
         }
     }
 }
