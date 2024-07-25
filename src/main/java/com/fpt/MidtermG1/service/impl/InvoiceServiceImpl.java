@@ -3,6 +3,7 @@ package com.fpt.MidtermG1.service.impl;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.time.Duration;
 import java.time.Instant;
 import java.util.HashSet;
 import java.util.List;
@@ -117,64 +118,70 @@ public class InvoiceServiceImpl implements InvoiceService {
     }
 
     @Override
-@Transactional
-public InvoiceDTO editInvoice(String id, InvoiceDTO invoiceDTO) {
-    Invoice existingInvoice = invoiceRepository.findById(id)
-            .orElseThrow(() -> new ResourceNotFoundException("Invoice not found"));
+    @Transactional
+    public InvoiceDTO editInvoice(String id, InvoiceDTO invoiceDTO) {
+        Invoice existingInvoice = invoiceRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Invoice not found"));
 
-    invoiceProductRepository.deleteByInvoice(existingInvoice);
-
-    List<InvoiceProductDTO> invoiceProducts = invoiceDTO.getInvoiceProducts();
-    BigDecimal invoiceAmount = BigDecimal.ZERO;
-    Set<String> inactiveProductIds = new HashSet<>();
-
-    for (InvoiceProductDTO invoiceProduct : invoiceProducts) {
-        Product product = productRepository.findById(invoiceProduct.getProduct().getId())
-                .orElseThrow(() -> new ResourceNotFoundException("Product not found"));
-
-        if (product.getStatus() != Status.ACTIVE) {
-            inactiveProductIds.add(String.valueOf(product.getId())); // Convert ID to String
+ 
+        Timestamp currentTime = Timestamp.from(Instant.now());
+        Duration duration = Duration.between(existingInvoice.getInvoiceDate().toInstant(), currentTime.toInstant());
+        if (duration.toMinutes() > 10) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invoice can only be edited within 10 minutes of creation");
         }
 
-        BigDecimal price = product.getPrice();
-        int quantity = invoiceProduct.getQuantity();
-        BigDecimal amount = price.multiply(BigDecimal.valueOf(quantity));
+        invoiceProductRepository.deleteByInvoice(existingInvoice);
 
-        invoiceProduct.setPrice(price);
-        invoiceProduct.setAmount(amount);
+        List<InvoiceProductDTO> invoiceProducts = invoiceDTO.getInvoiceProducts();
+        BigDecimal invoiceAmount = BigDecimal.ZERO;
+        Set<String> inactiveProductIds = new HashSet<>();
 
-        invoiceAmount = invoiceAmount.add(amount);
+        for (InvoiceProductDTO invoiceProduct : invoiceProducts) {
+            Product product = productRepository.findById(invoiceProduct.getProduct().getId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Product not found"));
+
+            if (product.getStatus() != Status.ACTIVE) {
+                inactiveProductIds.add(String.valueOf(product.getId()));
+            }
+
+            BigDecimal price = product.getPrice();
+            int quantity = invoiceProduct.getQuantity();
+            BigDecimal amount = price.multiply(BigDecimal.valueOf(quantity));
+
+            invoiceProduct.setPrice(price);
+            invoiceProduct.setAmount(amount);
+
+            invoiceAmount = invoiceAmount.add(amount);
+        }
+
+        Customer customer = customerRepository.findById(invoiceDTO.getCustomer().getId())
+                .orElseThrow(() -> new ResourceNotFoundException("Customer not found"));
+
+        if (customer.getStatus() != Status.ACTIVE) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Customer is inactive");
+        }
+
+        if (!inactiveProductIds.isEmpty()) {
+            String message = generateInactiveProductMessage(inactiveProductIds);
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, message);
+        }
+
+        existingInvoice.setCustomer(customer);
+        existingInvoice.setInvoiceAmount(invoiceAmount);
+        existingInvoice.setUpdatedTime(Timestamp.from(Instant.now()));
+
+        Invoice savedInvoice = invoiceRepository.save(existingInvoice);
+
+        for (InvoiceProductDTO invoiceProductDTO : invoiceDTO.getInvoiceProducts()) {
+            InvoiceProduct invoiceProduct = invoiceProductDTO.toEntity();
+            invoiceProduct.setInvoice(savedInvoice);
+            invoiceProduct.setInvoice_id(savedInvoice.getId());
+            invoiceProduct.setProduct_id(invoiceProductDTO.getProduct().getId());
+            invoiceProductRepository.save(invoiceProduct);
+        }
+
+        return savedInvoice.toDTO();
     }
-
-    Customer customer = customerRepository.findById(invoiceDTO.getCustomer().getId())
-            .orElseThrow(() -> new ResourceNotFoundException("Customer not found"));
-
-    if (customer.getStatus() != Status.ACTIVE) {
-        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Customer is inactive");
-    }
-
-    if (!inactiveProductIds.isEmpty()) {
-        String message = generateInactiveProductMessage(inactiveProductIds);
-        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, message);
-    }
-
-    existingInvoice.setCustomer(customer);
-    existingInvoice.setInvoiceAmount(invoiceAmount);
-    existingInvoice.setInvoiceDate(Timestamp.from(Instant.now())); // Set the invoice date
-    existingInvoice.setUpdatedTime(Timestamp.from(Instant.now()));
-
-    Invoice savedInvoice = invoiceRepository.save(existingInvoice);
-
-    for (InvoiceProductDTO invoiceProductDTO : invoiceDTO.getInvoiceProducts()) {
-        InvoiceProduct invoiceProduct = invoiceProductDTO.toEntity();
-        invoiceProduct.setInvoice(savedInvoice);
-        invoiceProduct.setInvoice_id(savedInvoice.getId());
-        invoiceProduct.setProduct_id(invoiceProductDTO.getProduct().getId());
-        invoiceProductRepository.save(invoiceProduct);
-    }
-
-    return savedInvoice.toDTO();
-}
 
 
 
