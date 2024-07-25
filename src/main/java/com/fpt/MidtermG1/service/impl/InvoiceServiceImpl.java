@@ -1,5 +1,6 @@
 package com.fpt.MidtermG1.service.impl;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -28,6 +29,7 @@ import com.fpt.MidtermG1.exception.InactiveCustomerException;
 import com.fpt.MidtermG1.exception.InactiveProductException;
 import com.fpt.MidtermG1.exception.ResourceNotFoundException;
 import com.fpt.MidtermG1.service.InvoiceService;
+import com.fpt.MidtermG1.util.PDFUtils;
 
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
@@ -39,6 +41,7 @@ public class InvoiceServiceImpl implements InvoiceService {
     private final CustomerRepository customerRepository;
     private final ProductRepository productRepository;
     private final InvoiceProductRepository invoiceProductRepository;
+    private final PDFUtils pdfUtils;
 
     @Override
     @Transactional
@@ -165,5 +168,17 @@ public class InvoiceServiceImpl implements InvoiceService {
         return invoices.getContent().stream()
                 .map(Invoice::toDTO)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public byte[] exportInvoiceToPDF(String id) {
+        Invoice invoice = invoiceRepository.findById(id)
+                    .orElseThrow(() -> new ResourceNotFoundException("Invoice not found with id: " + id));
+
+        try {
+            return pdfUtils.generateInvoicePDF(invoice);
+        } catch (IOException e) {
+            throw new ResourceNotFoundException("Failed to export the PDF: " + e.getMessage());
+        }
     }
 }
