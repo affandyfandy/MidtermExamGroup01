@@ -193,19 +193,59 @@ public InvoiceDTO editInvoice(String id, InvoiceDTO invoiceDTO) {
 
     @Override
     public InvoiceDTO getInvoiceById(String id) {
-        Invoice invoice = invoiceRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Invoice not found with id: " + id));
-        return invoice.toDTO();
+        Optional<Invoice> invoiceOpt = invoiceRepository.findById(id);
+        if (invoiceOpt.isEmpty()) {
+            throw new ResourceNotFoundException("Invoice not found with id: " + id);
+        }
+
+        Invoice invoice = invoiceOpt.get();
+        List<InvoiceProduct> invoiceProducts = invoiceProductRepository.findByInvoiceId(id);
+
+        List<InvoiceProductDTO> invoiceProductDTOs = invoiceProducts.stream()
+                .map(InvoiceProduct::toDTO)
+                .collect(Collectors.toList());
+
+        return InvoiceDTO.builder()
+                .id(invoice.getId())
+                .customer(invoice.getCustomer() != null ? invoice.getCustomer().toDTO() : null)
+                .invoiceAmount(invoice.getInvoiceAmount())
+                .invoiceDate(invoice.getInvoiceDate())
+                .createdTime(invoice.getCreatedTime())
+                .updatedTime(invoice.getUpdatedTime())
+                .invoiceProducts(invoiceProductDTOs)
+                .build();
     }
 
     @Override
     public List<InvoiceDTO> getAllInvoices(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
-        Page<Invoice> invoices = invoiceRepository.findAll(pageable);
-        return invoices.getContent().stream()
-                .map(Invoice::toDTO)
-                .collect(Collectors.toList());
+        Page<Invoice> invoicesPage = invoiceRepository.findAll(pageable);
+
+        List<Invoice> invoices = invoicesPage.getContent();
+
+        List<InvoiceDTO> invoiceDTOs = new ArrayList<>();
+        for (Invoice invoice : invoices) {
+            List<InvoiceProduct> invoiceProducts = invoiceProductRepository.findByInvoiceId(invoice.getId());
+            List<InvoiceProductDTO> invoiceProductDTOs = invoiceProducts.stream()
+                    .map(InvoiceProduct::toDTO)
+                    .collect(Collectors.toList());
+
+            InvoiceDTO invoiceDTO = InvoiceDTO.builder()
+                    .id(invoice.getId())
+                    .customer(invoice.getCustomer() != null ? invoice.getCustomer().toDTO() : null)
+                    .invoiceAmount(invoice.getInvoiceAmount())
+                    .invoiceDate(invoice.getInvoiceDate())
+                    .createdTime(invoice.getCreatedTime())
+                    .updatedTime(invoice.getUpdatedTime())
+                    .invoiceProducts(invoiceProductDTOs)
+                    .build();
+
+            invoiceDTOs.add(invoiceDTO);
+        }
+
+        return invoiceDTOs;
     }
+
 
     @Override
     @Transactional
@@ -254,16 +294,36 @@ public InvoiceDTO editInvoice(String id, InvoiceDTO invoiceDTO) {
         Specification<Invoice> spec = builder.build();
         Pageable pageable = PageRequest.of(page, size);
 
-        return invoiceRepository.findAll(spec, pageable)
-                .stream()
-                .map(Invoice::toDTO)
-                .collect(Collectors.toList());
+        Page<Invoice> invoicesPage = invoiceRepository.findAll(spec, pageable);
+        List<Invoice> invoices = invoicesPage.getContent();
+
+        List<InvoiceDTO> invoiceDTOs = new ArrayList<>();
+        for (Invoice invoice : invoices) {
+            List<InvoiceProduct> invoiceProducts = invoiceProductRepository.findByInvoiceId(invoice.getId());
+            List<InvoiceProductDTO> invoiceProductDTOs = invoiceProducts.stream()
+                    .map(InvoiceProduct::toDTO)
+                    .collect(Collectors.toList());
+
+            InvoiceDTO invoiceDTO = InvoiceDTO.builder()
+                    .id(invoice.getId())
+                    .customer(invoice.getCustomer() != null ? invoice.getCustomer().toDTO() : null)
+                    .invoiceAmount(invoice.getInvoiceAmount())
+                    .invoiceDate(invoice.getInvoiceDate())
+                    .createdTime(invoice.getCreatedTime())
+                    .updatedTime(invoice.getUpdatedTime())
+                    .invoiceProducts(invoiceProductDTOs)
+                    .build();
+
+            invoiceDTOs.add(invoiceDTO);
+        }
+
+        return invoiceDTOs;
     }
 
     @Override
     public byte[] exportInvoiceToPDF(String id) {
         Invoice invoice = invoiceRepository.findById(id)
-                    .orElseThrow(() -> new ResourceNotFoundException("Invoice not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Invoice not found with id: " + id));
 
         try {
             return pdfUtils.generateInvoicePDF(invoice);
