@@ -59,4 +59,13 @@ public class ProductController {
             throw new RuntimeException(e);
         }
     }
+    @PutMapping(value="/activate/{id}")
+    public ResponseEntity<ProductDTO> activateStatus(@PathVariable int id) {
+        return ResponseEntity.ok(productService.activateProduct(id));
+    }
+
+    @PutMapping(value="/deactivate/{id}")
+    public ResponseEntity<ProductDTO> deactivateStatus(@PathVariable int id) {
+        return ResponseEntity.ok(productService.deactivateProduct(id));
+    }
 }

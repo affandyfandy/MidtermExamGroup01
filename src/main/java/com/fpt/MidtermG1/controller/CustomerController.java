@@ -70,4 +70,14 @@ public class CustomerController {
     public ResponseEntity<CustomerDTO> editCustomer(@PathVariable("id") String id, @RequestBody @Valid CustomerDTO body) {
         return ResponseEntity.ok(customerService.editCustomer(id, body));
     }
+
+    @PutMapping(value="/activate/{id}")
+    public ResponseEntity<CustomerDTO> activateStatus(@PathVariable("id") String id) {
+        return ResponseEntity.ok(customerService.activateCustomer(id));
+    }
+
+    @PutMapping(value="/deactivate/{id}")
+    public ResponseEntity<CustomerDTO> deactivateStatus(@PathVariable("id") String id) {
+        return ResponseEntity.ok(customerService.deactivateCustomer(id));
+    }
 }
