@@ -89,26 +89,26 @@ public ResponseEntity<InvoiceDTO> addInvoice(@RequestBody InvoiceDTO invoiceDTO)
         return ResponseEntity.ok(invoices);
     }
 
-    @GetMapping("export/{id}")
-public ResponseEntity<String> exportToPDF(@PathVariable String id) {
-    byte[] pdfBytes = invoiceService.exportInvoiceToPDF(id);
+    @GetMapping("/export-pdf")
+    public ResponseEntity<String> exportToPDF() {
+        byte[] pdfBytes = invoiceService.exportAllInvoicesToPDF();
 
-    // Determine the path for saving the file
-    Path path = Paths.get("src/main/resources/invoices.pdf");
-    File file = path.toFile();
-    
-    // Save file to resources folder
-    try (FileOutputStream fos = new FileOutputStream(file)) {
-        fos.write(pdfBytes);
-    } catch (IOException e) {
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error saving file: " + e.getMessage());
+        // Determine the path for saving the file
+        Path path = Paths.get("src/main/resources/invoices.pdf");
+        File file = path.toFile();
+        
+        // Save file to resources folder
+        try (FileOutputStream fos = new FileOutputStream(file)) {
+            fos.write(pdfBytes);
+        } catch (IOException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error saving file: " + e.getMessage());
+        }
+
+        // Return a response indicating the file was saved
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Type", "text/plain");
+        return ResponseEntity.ok().headers(headers).body("File saved to " + path.toAbsolutePath());
     }
-
-    // Return a response indicating the file was saved
-    HttpHeaders headers = new HttpHeaders();
-    headers.add("Content-Type", "text/plain");
-    return ResponseEntity.ok().headers(headers).body("File saved to " + path.toAbsolutePath());
-}
 
     
     

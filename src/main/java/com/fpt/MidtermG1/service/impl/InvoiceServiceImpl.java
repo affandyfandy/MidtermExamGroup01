@@ -271,14 +271,12 @@ public class InvoiceServiceImpl implements InvoiceService {
     }
 
     @Override
-    public byte[] exportInvoiceToPDF(String id) {
-        Invoice invoice = invoiceRepository.findById(id)
-                    .orElseThrow(() -> new ResourceNotFoundException("Invoice not found with id: " + id));
-    
+    public byte[] exportAllInvoicesToPDF() {
+        List<InvoiceProduct> invoiceProducts = invoiceProductRepository.findAll();
         try {
-            return pdfUtils.generateInvoicePDF(invoice);
+            return pdfUtils.generateAllInvoicesPDF(invoiceProducts);
         } catch (IOException e) {
-            throw new ResourceNotFoundException("Failed to export the PDF: " + e.getMessage());
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to export the PDF: " + e.getMessage());
         }
     }
     
