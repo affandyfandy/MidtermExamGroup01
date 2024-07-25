@@ -271,14 +271,15 @@ public class InvoiceServiceImpl implements InvoiceService {
     }
 
     @Override
-    public byte[] exportAllInvoicesToPDF() {
-        List<InvoiceProduct> invoiceProducts = invoiceProductRepository.findAll();
-        try {
-            return pdfUtils.generateAllInvoicesPDF(invoiceProducts);
-        } catch (IOException e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to export the PDF: " + e.getMessage());
-        }
+public byte[] exportAllInvoicesToPDF() {
+    List<InvoiceProduct> invoiceProducts = invoiceProductRepository.findAllWithDetails();
+    try {
+        return pdfUtils.generateAllInvoicesPDF(invoiceProducts);
+    } catch (IOException e) {
+        throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to export the PDF: " + e.getMessage());
     }
+}
+
     
 
      @Override

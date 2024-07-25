@@ -20,13 +20,14 @@ public class PDFUtils {
 
     private final SpringTemplateEngine springTemplateEngine;
 
-   public byte[] generateAllInvoicesPDF(List<InvoiceProduct> invoiceProducts) throws IOException {
+    public byte[] generateAllInvoicesPDF(List<InvoiceProduct> invoiceProducts) throws IOException {
         Context context = new Context();
         context.setVariable("invoiceProducts", invoiceProducts);
-        
+    
         String htmlContent = springTemplateEngine.process("invoice-template", context);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         HtmlConverter.convertToPdf(htmlContent, baos);
         return baos.toByteArray();
     }
+    
 }
