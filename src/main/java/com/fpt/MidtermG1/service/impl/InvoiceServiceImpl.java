@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.fpt.MidtermG1.specifications.InvoiceSpecificationsBuilder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -21,7 +22,6 @@ import com.fpt.MidtermG1.data.repository.CustomerRepository;
 import com.fpt.MidtermG1.data.repository.InvoiceProductRepository;
 import com.fpt.MidtermG1.data.repository.InvoiceRepository;
 import com.fpt.MidtermG1.data.repository.ProductRepository;
-import com.fpt.MidtermG1.data.specification.InvoiceSpecification;
 import com.fpt.MidtermG1.dto.InvoiceDTO;
 import com.fpt.MidtermG1.dto.InvoiceProductDTO;
 import com.fpt.MidtermG1.exception.InactiveCustomerException;
@@ -49,7 +49,6 @@ public class InvoiceServiceImpl implements InvoiceService {
         if (customer.getStatus() != Status.ACTIVE) {
             throw new InactiveCustomerException("Customer is inactive");
         }
-
         for (InvoiceProductDTO ipDTO : invoiceDTO.getInvoiceProducts()) {
             Product product = productRepository.findById(ipDTO.getProduct().getId())
                     .orElseThrow(() -> new ResourceNotFoundException("Product not found with id: " + ipDTO.getProduct().getId()));
@@ -142,27 +141,30 @@ public class InvoiceServiceImpl implements InvoiceService {
     }
 
     @Override
-    public List<InvoiceDTO> getInvoicesByCriteria(String customerId, int year, int month, int page, int size) {
-        Pageable pageable = PageRequest.of(page, size);
-        Specification<Invoice> spec = Specification.where(null);
+    public List<InvoiceDTO> getInvoicesByCriteria(String customerId, String customerName, int year, int month, String invoiceAmountCondition, BigDecimal invoiceAmount, int page, int size) {
+        InvoiceSpecificationsBuilder builder = new InvoiceSpecificationsBuilder();
 
-        if (customerId != null) {
-            spec = spec.and(InvoiceSpecification.hasCustomerId(customerId));
+        if (customerId != null && !customerId.isEmpty()) {
+            builder.with("customer.id", ":", customerId);
+        }
+        if (customerName != null && !customerName.isEmpty()) {
+            builder.with("customer.name", ":", customerName);
         }
         if (year > 0) {
-            spec = spec.and(InvoiceSpecification.hasInvoiceYear(year));
+            builder.with("year", ":", year);
         }
         if (month > 0) {
-            spec = spec.and(InvoiceSpecification.hasInvoiceMonth(month));
+            builder.with("month", ":", month);
+        }
+        if (invoiceAmountCondition != null && !invoiceAmountCondition.isEmpty() && invoiceAmount != null) {
+            builder.with("invoiceAmount", invoiceAmountCondition, invoiceAmount);
         }
 
-        Page<Invoice> invoices = invoiceRepository.findAll(spec, pageable);
+        Specification<Invoice> spec = builder.build();
+        Pageable pageable = PageRequest.of(page, size);
 
-        if (invoices.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No invoices found with given criteria");
-        }
-
-        return invoices.getContent().stream()
+        return invoiceRepository.findAll(spec, pageable)
+                .stream()
                 .map(Invoice::toDTO)
                 .collect(Collectors.toList());
     }

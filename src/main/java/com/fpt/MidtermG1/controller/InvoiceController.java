@@ -1,5 +1,6 @@
 package com.fpt.MidtermG1.controller;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
@@ -61,12 +62,16 @@ public class InvoiceController {
     @GetMapping("/search")
     public ResponseEntity<List<InvoiceDTO>> getInvoicesByCriteria(
             @RequestParam(required = false) String customerId,
+            @RequestParam(required = false) String customerName,
             @RequestParam(required = false, defaultValue = "0") int year,
             @RequestParam(required = false, defaultValue = "0") int month,
+            @RequestParam(required = false) String invoiceAmountCondition,
+            @RequestParam(required = false) BigDecimal invoiceAmount,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size
     ) {
-        List<InvoiceDTO> invoices = invoiceService.getInvoicesByCriteria(customerId, year, month, page, size);
+        List<InvoiceDTO> invoices = invoiceService.getInvoicesByCriteria(customerId, customerName, year, month, invoiceAmountCondition, invoiceAmount, page, size);
         return ResponseEntity.ok(invoices);
     }
+
 }
