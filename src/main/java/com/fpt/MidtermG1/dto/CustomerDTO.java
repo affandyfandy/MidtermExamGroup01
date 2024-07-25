@@ -1,7 +1,10 @@
 package com.fpt.MidtermG1.dto;
 
 import java.sql.Timestamp;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fpt.MidtermG1.common.Status;
@@ -47,6 +50,9 @@ public class CustomerDTO {
         customer.setStatus(status);
         customer.setCreatedTime(createdTime);
         customer.setUpdatedTime(updatedTime);
+        customer.setInvoices(Optional.ofNullable(invoices).orElse(Collections.emptyList()).stream()
+                .map(InvoiceDTO::toEntity)
+                .collect(Collectors.toSet()));
         return customer;
     }
 }

@@ -34,6 +34,7 @@ import com.fpt.MidtermG1.exception.InactiveCustomerException;
 import com.fpt.MidtermG1.exception.InactiveProductException;
 import com.fpt.MidtermG1.exception.ResourceNotFoundException;
 import com.fpt.MidtermG1.service.InvoiceService;
+import com.fpt.MidtermG1.specifications.InvoiceSpecificationsBuilder;
 
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
@@ -53,7 +54,7 @@ public InvoiceDTO addInvoice(InvoiceDTO invoiceDTO) {
     BigDecimal invoiceAmount = BigDecimal.ZERO;
     Set<String> inactiveProductIds = new HashSet<>();
 
-    // Validasi status produk
+
     for (InvoiceProductDTO invoiceProduct : invoiceProducts) {
         Product product = productRepository.findById(invoiceProduct.getProduct().getId())
                 .orElseThrow(() -> new ResourceNotFoundException("Product not found"));
@@ -231,27 +232,30 @@ public InvoiceDTO editInvoice(String id, InvoiceDTO invoiceDTO) {
     }
 
     @Override
-    public List<InvoiceDTO> getInvoicesByCriteria(String customerId, int year, int month, int page, int size) {
-        Pageable pageable = PageRequest.of(page, size);
-        Specification<Invoice> spec = Specification.where(null);
+    public List<InvoiceDTO> getInvoicesByCriteria(String customerId, String customerName, int year, int month, String invoiceAmountCondition, BigDecimal invoiceAmount, int page, int size) {
+        InvoiceSpecificationsBuilder builder = new InvoiceSpecificationsBuilder();
 
-        if (customerId != null) {
-            spec = spec.and(InvoiceSpecification.hasCustomerId(customerId));
+        if (customerId != null && !customerId.isEmpty()) {
+            builder.with("customer.id", ":", customerId);
+        }
+        if (customerName != null && !customerName.isEmpty()) {
+            builder.with("customer.name", ":", customerName);
         }
         if (year > 0) {
-            spec = spec.and(InvoiceSpecification.hasInvoiceYear(year));
+            builder.with("year", ":", year);
         }
         if (month > 0) {
-            spec = spec.and(InvoiceSpecification.hasInvoiceMonth(month));
+            builder.with("month", ":", month);
+        }
+        if (invoiceAmountCondition != null && !invoiceAmountCondition.isEmpty() && invoiceAmount != null) {
+            builder.with("invoiceAmount", invoiceAmountCondition, invoiceAmount);
         }
 
-        Page<Invoice> invoices = invoiceRepository.findAll(spec, pageable);
+        Specification<Invoice> spec = builder.build();
+        Pageable pageable = PageRequest.of(page, size);
 
-        if (invoices.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No invoices found with given criteria");
-        }
-
-        return invoices.getContent().stream()
+        return invoiceRepository.findAll(spec, pageable)
+                .stream()
                 .map(Invoice::toDTO)
                 .collect(Collectors.toList());
     }
