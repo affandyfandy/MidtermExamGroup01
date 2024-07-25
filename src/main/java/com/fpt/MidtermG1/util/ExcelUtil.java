@@ -130,14 +130,14 @@ public class ExcelUtil {
             createHeaderRow(headerRow);
 
             for (InvoiceDTO invoice : invoices) {
-                Row row = sheet.createRow(rowNum++);
-                createInvoiceRow(row, invoice);
-
                 if (invoice.getInvoiceProducts() != null && !invoice.getInvoiceProducts().isEmpty()) {
                     for (InvoiceProductDTO invoiceProduct : invoice.getInvoiceProducts()) {
-                        Row productRow = sheet.createRow(rowNum++);
-                        createInvoiceProductRow(productRow, invoiceProduct);
+                        Row row = sheet.createRow(rowNum++);
+                        createInvoiceProductRow(row, invoiceProduct, invoice);
                     }
+                } else {
+                    Row row = sheet.createRow(rowNum++);
+                    createInvoiceRow(row, invoice);
                 }
             }
 
@@ -161,18 +161,21 @@ public class ExcelUtil {
         cell.setCellValue("Invoice Amount");
 
         cell = row.createCell(4);
-        cell.setCellValue("Product ID");
+        cell.setCellValue("Invoice Date");
 
         cell = row.createCell(5);
-        cell.setCellValue("Product Name");
+        cell.setCellValue("Product ID");
 
         cell = row.createCell(6);
-        cell.setCellValue("Product Price");
+        cell.setCellValue("Product Name");
 
         cell = row.createCell(7);
-        cell.setCellValue("Product Quantity");
+        cell.setCellValue("Product Price");
 
         cell = row.createCell(8);
+        cell.setCellValue("Product Quantity");
+
+        cell = row.createCell(9);
         cell.setCellValue("Product Amount");
     }
 
@@ -188,22 +191,41 @@ public class ExcelUtil {
 
         cell = row.createCell(3);
         cell.setCellValue(invoice.getInvoiceAmount().doubleValue());
+
+        cell = row.createCell(4);
+        cell.setCellValue(invoice.getInvoiceDate().toString());
     }
 
-    private static void createInvoiceProductRow(Row row, InvoiceProductDTO invoiceProduct) {
-        Cell cell = row.createCell(4);
-        cell.setCellValue(invoiceProduct.getProduct().getId());
+    private static void createInvoiceProductRow(Row row, InvoiceProductDTO invoiceProduct, InvoiceDTO invoice) {
+        Cell cell = row.createCell(0);
+        cell.setCellValue(invoice.getId());
+
+        cell = row.createCell(1);
+        cell.setCellValue(invoice.getCustomer().getId());
+
+        cell = row.createCell(2);
+        cell.setCellValue(invoice.getCustomer().getName());
+
+        cell = row.createCell(3);
+        cell.setCellValue(invoice.getInvoiceAmount().doubleValue());
+
+        cell = row.createCell(4);
+        cell.setCellValue(invoice.getInvoiceDate().toString());
 
         cell = row.createCell(5);
-        cell.setCellValue(invoiceProduct.getProduct().getName());
+        cell.setCellValue(invoiceProduct.getProduct().getId());
 
         cell = row.createCell(6);
-        cell.setCellValue(invoiceProduct.getPrice().doubleValue());
+        cell.setCellValue(invoiceProduct.getProduct().getName());
 
         cell = row.createCell(7);
-        cell.setCellValue(invoiceProduct.getQuantity());
+        cell.setCellValue(invoiceProduct.getProduct().getPrice().doubleValue());
 
         cell = row.createCell(8);
+        cell.setCellValue(invoiceProduct.getQuantity());
+
+        cell = row.createCell(9);
         cell.setCellValue(invoiceProduct.getAmount().doubleValue());
     }
 }
+

@@ -53,8 +53,6 @@ public class Customer {
     @Column(name = "updated_time", nullable = false)
     private Timestamp updatedTime;
 
-    @OneToMany(mappedBy = "customer", fetch = FetchType.LAZY)
-    private Set<Invoice> invoices;
 
     @PrePersist
     protected void onCreate() {
@@ -75,11 +73,6 @@ public class Customer {
                 .status(this.getStatus())
                 .createdTime(this.getCreatedTime())
                 .updatedTime(this.getUpdatedTime())
-                .invoices(Optional.ofNullable(this.getInvoices())
-                        .map(invoice -> invoice.stream()
-                                .map(Invoice::toDTO)
-                                .collect(Collectors.toList()))
-                        .orElse(null))
                 .build();
     }
 }

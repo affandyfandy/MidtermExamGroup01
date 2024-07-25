@@ -40,7 +40,6 @@ public class CustomerDTO {
     private Status status;
     private Timestamp createdTime;
     private Timestamp updatedTime;
-    private List<InvoiceDTO> invoices;
 
     public Customer toEntity() {
         Customer customer = new Customer();
@@ -50,9 +49,6 @@ public class CustomerDTO {
         customer.setStatus(status);
         customer.setCreatedTime(createdTime);
         customer.setUpdatedTime(updatedTime);
-        customer.setInvoices(Optional.ofNullable(invoices).orElse(Collections.emptyList()).stream()
-                .map(InvoiceDTO::toEntity)
-                .collect(Collectors.toSet()));
         return customer;
     }
 }
