@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fpt.MidtermG1.data.entity.Invoice;
 
 import lombok.AllArgsConstructor;
@@ -18,6 +19,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class InvoiceDTO {
     private String id;
     private CustomerDTO customer;
@@ -28,18 +30,18 @@ public class InvoiceDTO {
     private List<InvoiceProductDTO> invoiceProducts;
 
     public Invoice toEntity() {
-        return Invoice.builder()
-                .id(this.getId())
-                .customer(this.getCustomer() != null ? this.getCustomer().toEntity() : null)
-                .invoiceAmount(this.getInvoiceAmount())
-                .invoiceDate(this.getInvoiceDate())
-                .createdTime(this.getCreatedTime())
-                .updatedTime(this.getUpdatedTime())
-                .invoiceProducts(Optional.ofNullable(this.getInvoiceProducts())
-                                .map(invoice -> invoice.stream()
-                                .map(InvoiceProductDTO::toEntity)
-                                .collect(Collectors.toSet()))
-                                .orElse(Collections.emptySet()))
-                .build();
+        Invoice invoice = new Invoice();
+        invoice.setId(id);
+        invoice.setCustomer(Optional.ofNullable(customer).map(CustomerDTO::toEntity).orElse(null));
+        invoice.setInvoiceAmount(invoiceAmount);
+        invoice.setInvoiceDate(invoiceDate);
+        invoice.setCreatedTime(createdTime);
+        invoice.setUpdatedTime(updatedTime);
+        invoice.setInvoiceProducts(Optional.ofNullable(invoiceProducts).orElse(Collections.emptyList()).stream()
+                .map(InvoiceProductDTO::toEntity)
+                .collect(Collectors.toSet()));
+        return invoice;
     }
+    
+    
 }

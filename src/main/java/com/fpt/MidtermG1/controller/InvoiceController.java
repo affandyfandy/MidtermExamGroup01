@@ -1,5 +1,6 @@
 package com.fpt.MidtermG1.controller;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.springframework.http.ContentDisposition;
@@ -30,13 +31,14 @@ public class InvoiceController {
     private final InvoiceService invoiceService;
 
     @PostMapping
-    public ResponseEntity<InvoiceDTO> addInvoice(@Valid @RequestBody InvoiceDTO invoiceDTO) {
-        InvoiceDTO createdInvoice = invoiceService.addInvoice(invoiceDTO);
-        return ResponseEntity.status(201).body(createdInvoice);
-    }
+public ResponseEntity<InvoiceDTO> addInvoice(@RequestBody InvoiceDTO invoiceDTO) {
+    InvoiceDTO createdInvoice = invoiceService.addInvoice(invoiceDTO);
+    return ResponseEntity.ok(createdInvoice);
+}
+
 
     @PutMapping("/{id}")
-    public ResponseEntity<InvoiceDTO> editInvoice(@PathVariable String id, @Valid @RequestBody InvoiceDTO invoiceDTO) {
+    public ResponseEntity<InvoiceDTO> editInvoice(@PathVariable String id, @RequestBody InvoiceDTO invoiceDTO) {
         InvoiceDTO updatedInvoice = invoiceService.editInvoice(id, invoiceDTO);
         return ResponseEntity.ok(updatedInvoice);
     }
@@ -62,18 +64,20 @@ public class InvoiceController {
         return ResponseEntity.status(201).body(createdInvoiceProduct);
     }
 
-    @GetMapping("/search")
+   @GetMapping("/search")
     public ResponseEntity<List<InvoiceDTO>> getInvoicesByCriteria(
             @RequestParam(required = false) String customerId,
+            @RequestParam(required = false) String customerName,
             @RequestParam(required = false, defaultValue = "0") int year,
             @RequestParam(required = false, defaultValue = "0") int month,
+            @RequestParam(required = false) String invoiceAmountCondition,
+            @RequestParam(required = false) BigDecimal invoiceAmount,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size
     ) {
-        List<InvoiceDTO> invoices = invoiceService.getInvoicesByCriteria(customerId, year, month, page, size);
+        List<InvoiceDTO> invoices = invoiceService.getInvoicesByCriteria(customerId, customerName, year, month, invoiceAmountCondition, invoiceAmount, page, size);
         return ResponseEntity.ok(invoices);
     }
-
     @GetMapping("export/{id}")
     public ResponseEntity<byte[]> exportToPDF(@PathVariable String id) {
         byte[] pdfBytes = invoiceService.exportInvoiceToPDF(id);
@@ -84,4 +88,5 @@ public class InvoiceController {
 
         return ResponseEntity.status(HttpStatus.OK).headers(headers).body(pdfBytes);
     }
+
 }
