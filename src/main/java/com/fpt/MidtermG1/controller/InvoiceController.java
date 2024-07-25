@@ -3,6 +3,10 @@ package com.fpt.MidtermG1.controller;
 import java.math.BigDecimal;
 import java.util.List;
 
+import org.springframework.http.ContentDisposition;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -73,6 +77,16 @@ public ResponseEntity<InvoiceDTO> addInvoice(@RequestBody InvoiceDTO invoiceDTO)
     ) {
         List<InvoiceDTO> invoices = invoiceService.getInvoicesByCriteria(customerId, customerName, year, month, invoiceAmountCondition, invoiceAmount, page, size);
         return ResponseEntity.ok(invoices);
+    }
+    @GetMapping("export/{id}")
+    public ResponseEntity<byte[]> exportToPDF(@PathVariable String id) {
+        byte[] pdfBytes = invoiceService.exportInvoiceToPDF(id);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_PDF);
+        headers.setContentDisposition(ContentDisposition.builder("attachment").filename("invoice.pdf").build());
+
+        return ResponseEntity.status(HttpStatus.OK).headers(headers).body(pdfBytes);
     }
 
 }
