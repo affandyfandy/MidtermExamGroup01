@@ -3,7 +3,6 @@ package com.fpt.MidtermG1.controller;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,6 +16,7 @@ import com.fpt.MidtermG1.dto.InvoiceDTO;
 import com.fpt.MidtermG1.dto.InvoiceProductDTO;
 import com.fpt.MidtermG1.service.InvoiceService;
 
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 
 @RestController
@@ -26,13 +26,13 @@ public class InvoiceController {
     private final InvoiceService invoiceService;
 
     @PostMapping
-    public ResponseEntity<InvoiceDTO> addInvoice(@Validated @RequestBody InvoiceDTO invoiceDTO) {
-        InvoiceDTO addedInvoice = invoiceService.addInvoice(invoiceDTO);
-        return ResponseEntity.ok(addedInvoice);
+    public ResponseEntity<InvoiceDTO> addInvoice(@Valid @RequestBody InvoiceDTO invoiceDTO) {
+        InvoiceDTO createdInvoice = invoiceService.addInvoice(invoiceDTO);
+        return ResponseEntity.status(201).body(createdInvoice);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<InvoiceDTO> editInvoice(@PathVariable String id, @Validated @RequestBody InvoiceDTO invoiceDTO) {
+    public ResponseEntity<InvoiceDTO> editInvoice(@PathVariable String id, @Valid @RequestBody InvoiceDTO invoiceDTO) {
         InvoiceDTO updatedInvoice = invoiceService.editInvoice(id, invoiceDTO);
         return ResponseEntity.ok(updatedInvoice);
     }
@@ -46,22 +46,27 @@ public class InvoiceController {
     @GetMapping
     public ResponseEntity<List<InvoiceDTO>> getAllInvoices(
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
-            @RequestParam(required = false) String customerId,
-            @RequestParam(required = false) Integer year,
-            @RequestParam(required = false) Integer month) {
-        List<InvoiceDTO> invoices;
-        if (customerId != null && year != null && month != null) {
-            invoices = invoiceService.getInvoicesByCriteria(customerId, year, month, page, size);
-        } else {
-            invoices = invoiceService.getAllInvoices(page, size);
-        }
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        List<InvoiceDTO> invoices = invoiceService.getAllInvoices(page, size);
         return ResponseEntity.ok(invoices);
     }
 
     @PostMapping("/products")
-    public ResponseEntity<InvoiceProductDTO> addInvoiceProduct(@Validated @RequestBody InvoiceProductDTO invoiceProductDTO) {
-        InvoiceProductDTO addedInvoiceProduct = invoiceService.addInvoiceProduct(invoiceProductDTO);
-        return ResponseEntity.ok(addedInvoiceProduct);
+    public ResponseEntity<InvoiceProductDTO> addInvoiceProduct(@Valid @RequestBody InvoiceProductDTO invoiceProductDTO) {
+        InvoiceProductDTO createdInvoiceProduct = invoiceService.addInvoiceProduct(invoiceProductDTO);
+        return ResponseEntity.status(201).body(createdInvoiceProduct);
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<List<InvoiceDTO>> getInvoicesByCriteria(
+            @RequestParam(required = false) String customerId,
+            @RequestParam(required = false, defaultValue = "0") int year,
+            @RequestParam(required = false, defaultValue = "0") int month,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        List<InvoiceDTO> invoices = invoiceService.getInvoicesByCriteria(customerId, year, month, page, size);
+        return ResponseEntity.ok(invoices);
     }
 }
