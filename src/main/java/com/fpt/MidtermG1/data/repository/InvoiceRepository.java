@@ -5,5 +5,9 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
 import com.fpt.MidtermG1.data.entity.Invoice;
 
+import java.sql.Timestamp;
+import java.util.List;
+
 public interface InvoiceRepository extends JpaRepository<Invoice, String>, JpaSpecificationExecutor<Invoice> {
+    List<Invoice> findByInvoiceDateBetween(Timestamp startDate, Timestamp endDate);
 }

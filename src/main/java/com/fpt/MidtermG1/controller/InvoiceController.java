@@ -1,8 +1,11 @@
 package com.fpt.MidtermG1.controller;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.List;
 
+import com.fpt.MidtermG1.dto.RevenueReportDTO;
+import com.fpt.MidtermG1.util.ExcelUtil;
 import org.springframework.http.ContentDisposition;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -89,4 +92,26 @@ public ResponseEntity<InvoiceDTO> addInvoice(@RequestBody InvoiceDTO invoiceDTO)
         return ResponseEntity.status(HttpStatus.OK).headers(headers).body(pdfBytes);
     }
 
+    @GetMapping("/export-excel")
+    public ResponseEntity<byte[]> exportInvoicesToExcel(@RequestParam(required = false) String customerId,
+                                                        @RequestParam(required = false) String customerName,
+                                                        @RequestParam(required = false) Integer year,
+                                                        @RequestParam(required = false) Integer month,
+                                                        @RequestParam(required = false) String invoiceAmountCondition,
+                                                        @RequestParam(required = false) BigDecimal invoiceAmount) throws IOException {
+        List<InvoiceDTO> invoices = invoiceService.getInvoicesByCriteria(
+                customerId, customerName, year != null ? year : 0, month != null ? month : 0, invoiceAmountCondition, invoiceAmount, 0, Integer.MAX_VALUE);
+        byte[] excelContent = ExcelUtil.exportInvoicesToExcel(invoices);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Disposition", "attachment; filename=invoices.xlsx");
+        return ResponseEntity.ok().headers(headers).body(excelContent);
+    }
+
+    @GetMapping("/report")
+    public List<RevenueReportDTO> getRevenueReport(@RequestParam(required = false) Integer year,
+                                                   @RequestParam(required = false) Integer month,
+                                                   @RequestParam(required = false) Integer day) {
+        return invoiceService.getRevenueByPeriod(year, month, day);
+    }
 }

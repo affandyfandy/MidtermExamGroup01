@@ -2,11 +2,15 @@ package com.fpt.MidtermG1.util;
 
 import com.fpt.MidtermG1.data.entity.Product;
 import com.fpt.MidtermG1.common.Status;
+import com.fpt.MidtermG1.dto.InvoiceDTO;
+import com.fpt.MidtermG1.dto.InvoiceProductDTO;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
@@ -115,5 +119,91 @@ public class ExcelUtil {
         } catch (ParseException e) {
             return new Timestamp(System.currentTimeMillis());
         }
+    }
+
+    public static byte[] exportInvoicesToExcel(List<InvoiceDTO> invoices) throws IOException {
+        try (XSSFWorkbook workbook = new XSSFWorkbook()) {
+            XSSFSheet sheet = workbook.createSheet("Invoices");
+
+            int rowNum = 0;
+            Row headerRow = sheet.createRow(rowNum++);
+            createHeaderRow(headerRow);
+
+            for (InvoiceDTO invoice : invoices) {
+                Row row = sheet.createRow(rowNum++);
+                createInvoiceRow(row, invoice);
+
+                if (invoice.getInvoiceProducts() != null && !invoice.getInvoiceProducts().isEmpty()) {
+                    for (InvoiceProductDTO invoiceProduct : invoice.getInvoiceProducts()) {
+                        Row productRow = sheet.createRow(rowNum++);
+                        createInvoiceProductRow(productRow, invoiceProduct);
+                    }
+                }
+            }
+
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            workbook.write(outputStream);
+            return outputStream.toByteArray();
+        }
+    }
+
+    private static void createHeaderRow(Row row) {
+        Cell cell = row.createCell(0);
+        cell.setCellValue("Invoice ID");
+
+        cell = row.createCell(1);
+        cell.setCellValue("Customer ID");
+
+        cell = row.createCell(2);
+        cell.setCellValue("Customer Name");
+
+        cell = row.createCell(3);
+        cell.setCellValue("Invoice Amount");
+
+        cell = row.createCell(4);
+        cell.setCellValue("Product ID");
+
+        cell = row.createCell(5);
+        cell.setCellValue("Product Name");
+
+        cell = row.createCell(6);
+        cell.setCellValue("Product Price");
+
+        cell = row.createCell(7);
+        cell.setCellValue("Product Quantity");
+
+        cell = row.createCell(8);
+        cell.setCellValue("Product Amount");
+    }
+
+    private static void createInvoiceRow(Row row, InvoiceDTO invoice) {
+        Cell cell = row.createCell(0);
+        cell.setCellValue(invoice.getId());
+
+        cell = row.createCell(1);
+        cell.setCellValue(invoice.getCustomer().getId());
+
+        cell = row.createCell(2);
+        cell.setCellValue(invoice.getCustomer().getName());
+
+        cell = row.createCell(3);
+        cell.setCellValue(invoice.getInvoiceAmount().doubleValue());
+    }
+
+    private static void createInvoiceProductRow(Row row, InvoiceProductDTO invoiceProduct) {
+        Cell cell = row.createCell(4);
+        cell.setCellValue(invoiceProduct.getProduct().getId());
+
+        cell = row.createCell(5);
+        cell.setCellValue(invoiceProduct.getProduct().getName());
+
+        cell = row.createCell(6);
+        cell.setCellValue(invoiceProduct.getPrice().doubleValue());
+
+        cell = row.createCell(7);
+        cell.setCellValue(invoiceProduct.getQuantity());
+
+        cell = row.createCell(8);
+        cell.setCellValue(invoiceProduct.getAmount().doubleValue());
     }
 }

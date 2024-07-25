@@ -4,11 +4,12 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.Instant;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.*;
 import java.util.stream.Collectors;
 
+import com.fpt.MidtermG1.dto.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -27,10 +28,6 @@ import com.fpt.MidtermG1.data.repository.InvoiceProductRepository;
 import com.fpt.MidtermG1.data.repository.InvoiceRepository;
 import com.fpt.MidtermG1.data.repository.ProductRepository;
 import com.fpt.MidtermG1.data.specification.InvoiceSpecification;
-import com.fpt.MidtermG1.dto.CustomerDTO;
-import com.fpt.MidtermG1.dto.InvoiceDTO;
-import com.fpt.MidtermG1.dto.InvoiceProductDTO;
-import com.fpt.MidtermG1.dto.ProductDTO;
 import com.fpt.MidtermG1.exception.InactiveCustomerException;
 import com.fpt.MidtermG1.exception.InactiveProductException;
 import com.fpt.MidtermG1.exception.ResourceNotFoundException;
@@ -273,5 +270,58 @@ public InvoiceDTO editInvoice(String id, InvoiceDTO invoiceDTO) {
         } catch (IOException e) {
             throw new ResourceNotFoundException("Failed to export the PDF: " + e.getMessage());
         }
+    }
+
+    @Override
+    public List<RevenueReportDTO> getRevenueByPeriod(Integer year, Integer month, Integer day) {
+        Timestamp startDate = null;
+        Timestamp endDate = null;
+
+        if (year != null) {
+            LocalDateTime start = LocalDate.of(year, month != null ? month : 1, day != null ? day : 1).atStartOfDay();
+            LocalDateTime end = start.plusMonths(month != null ? 1 : 12).minusNanos(1);
+            startDate = Timestamp.valueOf(start);
+            endDate = Timestamp.valueOf(end);
+        }
+
+        List<Invoice> invoices;
+        if (startDate != null && endDate != null) {
+            invoices = invoiceRepository.findByInvoiceDateBetween(startDate, endDate);
+        } else {
+            invoices = invoiceRepository.findAll();
+        }
+
+        Map<String, BigDecimal> revenueMap = new HashMap<>();
+
+        for (Invoice invoice : invoices) {
+            Timestamp invoiceDate = invoice.getInvoiceDate();
+            if (matchesPeriod(invoiceDate, year, month, day)) {
+                String dateKey = invoiceDate.toLocalDateTime().toLocalDate().toString();
+                revenueMap.put(dateKey, revenueMap.getOrDefault(dateKey, BigDecimal.ZERO).add(invoice.getInvoiceAmount()));
+            }
+        }
+
+        List<RevenueReportDTO> report = new ArrayList<>();
+        for (Map.Entry<String, BigDecimal> entry : revenueMap.entrySet()) {
+            RevenueReportDTO dto = new RevenueReportDTO();
+            dto.setDate(LocalDate.parse(entry.getKey()));
+            dto.setRevenue(entry.getValue());
+            report.add(dto);
+        }
+
+        return report;
+    }
+
+    private boolean matchesPeriod(Timestamp invoiceDate, Integer year, Integer month, Integer day) {
+        if (year != null && !(invoiceDate.toLocalDateTime().toLocalDate().getYear() == year)) {
+            return false;
+        }
+        if (month != null && !(invoiceDate.toLocalDateTime().toLocalDate().getMonthValue() == month)) {
+            return false;
+        }
+        if (day != null && !(invoiceDate.toLocalDateTime().toLocalDate().getDayOfMonth() == day)) {
+            return false;
+        }
+        return true;
     }
 }
