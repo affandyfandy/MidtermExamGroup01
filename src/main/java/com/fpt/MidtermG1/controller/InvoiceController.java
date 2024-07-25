@@ -26,13 +26,14 @@ public class InvoiceController {
     private final InvoiceService invoiceService;
 
     @PostMapping
-    public ResponseEntity<InvoiceDTO> addInvoice(@Valid @RequestBody InvoiceDTO invoiceDTO) {
-        InvoiceDTO createdInvoice = invoiceService.addInvoice(invoiceDTO);
-        return ResponseEntity.status(201).body(createdInvoice);
-    }
+public ResponseEntity<InvoiceDTO> addInvoice(@RequestBody InvoiceDTO invoiceDTO) {
+    InvoiceDTO createdInvoice = invoiceService.addInvoice(invoiceDTO);
+    return ResponseEntity.ok(createdInvoice);
+}
+
 
     @PutMapping("/{id}")
-    public ResponseEntity<InvoiceDTO> editInvoice(@PathVariable String id, @Valid @RequestBody InvoiceDTO invoiceDTO) {
+    public ResponseEntity<InvoiceDTO> editInvoice(@PathVariable String id, @RequestBody InvoiceDTO invoiceDTO) {
         InvoiceDTO updatedInvoice = invoiceService.editInvoice(id, invoiceDTO);
         return ResponseEntity.ok(updatedInvoice);
     }

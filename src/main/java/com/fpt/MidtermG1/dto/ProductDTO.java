@@ -2,11 +2,9 @@ package com.fpt.MidtermG1.dto;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
-import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fpt.MidtermG1.common.Status;
 import com.fpt.MidtermG1.data.entity.Product;
 
@@ -23,6 +21,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ProductDTO {
     private int id;
 
@@ -44,18 +43,13 @@ public class ProductDTO {
     private List<InvoiceProductDTO> invoiceProducts;
 
     public Product toEntity() {
-        return Product.builder()
-                .id(this.getId())
-                .name(this.getName())
-                .price(this.getPrice())
-                .status(this.getStatus())
-                .createdTime(this.getCreatedTime())
-                .updatedTime(this.getUpdatedTime())
-                .invoiceProducts(Optional.ofNullable(this.getInvoiceProducts())
-                                .map(invoice -> invoice.stream()
-                                .map(InvoiceProductDTO::toEntity)
-                                .collect(Collectors.toSet()))
-                                .orElse(Collections.emptySet()))
-                .build();
+        Product product = new Product();
+        product.setId(id);
+        product.setName(name);
+        product.setPrice(price);
+        product.setStatus(status);
+        product.setCreatedTime(createdTime);
+        product.setUpdatedTime(updatedTime);
+        return product;
     }
 }

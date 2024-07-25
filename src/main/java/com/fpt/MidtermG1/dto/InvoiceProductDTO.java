@@ -1,7 +1,9 @@
 package com.fpt.MidtermG1.dto;
 
 import java.math.BigDecimal;
+import java.util.Optional;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fpt.MidtermG1.data.entity.InvoiceProduct;
 
 import jakarta.validation.constraints.DecimalMin;
@@ -16,6 +18,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class InvoiceProductDTO {
     private InvoiceDTO invoice;
     private ProductDTO product;
@@ -32,12 +35,12 @@ public class InvoiceProductDTO {
     private BigDecimal amount;
 
     public InvoiceProduct toEntity() {
-        return InvoiceProduct.builder()
-                .invoice(this.getInvoice() != null ? this.getInvoice().toEntity() : null)
-                .product(this.getProduct() != null ? this.getProduct().toEntity() : null)
-                .quantity(this.getQuantity())
-                .price(this.getPrice())
-                .amount(this.getAmount())
-                .build();
+        InvoiceProduct invoiceProduct = new InvoiceProduct();
+        invoiceProduct.setInvoice(Optional.ofNullable(invoice).map(InvoiceDTO::toEntity).orElse(null));
+        invoiceProduct.setProduct(Optional.ofNullable(product).map(ProductDTO::toEntity).orElse(null));
+        invoiceProduct.setQuantity(quantity);
+        invoiceProduct.setPrice(price);
+        invoiceProduct.setAmount(amount);
+        return invoiceProduct;
     }
 }
