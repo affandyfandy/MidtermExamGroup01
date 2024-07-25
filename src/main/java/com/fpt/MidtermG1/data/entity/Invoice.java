@@ -33,7 +33,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class Invoice {
     @Id
-    @GeneratedValue(strategy=GenerationType.UUID)
+    @GeneratedValue(strategy = GenerationType.UUID)
     @Column(length = 36)
     private String id;
 

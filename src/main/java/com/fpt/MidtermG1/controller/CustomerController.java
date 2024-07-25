@@ -21,40 +21,39 @@ import com.fpt.MidtermG1.service.CustomerService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 
-
 @RestController
 @RequestMapping("/api/v1/customers")
 @AllArgsConstructor
 public class CustomerController {
-    
+
     private final CustomerService customerService;
 
     @GetMapping
     public ResponseEntity<Page<CustomerDTO>> getCustomerList(
-        @RequestParam(defaultValue = "0") int page, 
-        @RequestParam(defaultValue = "10") int size,
-        @RequestParam(value = "keyword", required = false) String keyword) {
-            Pageable pageable = PageRequest.of(page, size);
-            Page<CustomerDTO> customers;
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(value = "keyword", required = false) String keyword) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<CustomerDTO> customers;
 
-            if (keyword == null || keyword.isBlank()) {
-                customers = customerService.getCustomerList(pageable);
-            } else {
-                customers = customerService.searchCustomers(keyword, pageable);
-            }
+        if (keyword == null || keyword.isBlank()) {
+            customers = customerService.getCustomerList(pageable);
+        } else {
+            customers = customerService.searchCustomers(keyword, pageable);
+        }
 
-            if (customers.isEmpty()) {
-                return ResponseEntity.notFound().build();
-            }
+        if (customers.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
 
-            return ResponseEntity.ok(customers);
+        return ResponseEntity.ok(customers);
     }
-    
+
     @GetMapping(value = "/{id}")
     public ResponseEntity<CustomerDTO> getCustomerById(@PathVariable("id") String id) {
         Optional<CustomerDTO> customerOpt = customerService.getCusromerById(id);
 
-        if(customerOpt.isPresent()) {
+        if (customerOpt.isPresent()) {
             return ResponseEntity.ok(customerOpt.get());
         }
 
@@ -67,16 +66,17 @@ public class CustomerController {
     }
 
     @PutMapping(value = "/{id}")
-    public ResponseEntity<CustomerDTO> editCustomer(@PathVariable("id") String id, @RequestBody @Valid CustomerDTO body) {
+    public ResponseEntity<CustomerDTO> editCustomer(@PathVariable("id") String id,
+            @RequestBody @Valid CustomerDTO body) {
         return ResponseEntity.ok(customerService.editCustomer(id, body));
     }
 
-    @PutMapping(value="/activate/{id}")
+    @PutMapping(value = "/activate/{id}")
     public ResponseEntity<CustomerDTO> activateStatus(@PathVariable("id") String id) {
         return ResponseEntity.ok(customerService.activateCustomer(id));
     }
 
-    @PutMapping(value="/deactivate/{id}")
+    @PutMapping(value = "/deactivate/{id}")
     public ResponseEntity<CustomerDTO> deactivateStatus(@PathVariable("id") String id) {
         return ResponseEntity.ok(customerService.deactivateCustomer(id));
     }

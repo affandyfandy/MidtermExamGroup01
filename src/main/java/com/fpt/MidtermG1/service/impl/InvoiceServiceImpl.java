@@ -67,7 +67,7 @@ public class InvoiceServiceImpl implements InvoiceService {
                     .orElseThrow(() -> new ResourceNotFoundException("Product not found"));
 
             if (product.getStatus() != Status.ACTIVE) {
-                inactiveProductIds.add(String.valueOf(product.getId())); // Convert ID to String
+                inactiveProductIds.add(String.valueOf(product.getId()));
             }
 
             BigDecimal price = product.getPrice();
@@ -126,11 +126,11 @@ public class InvoiceServiceImpl implements InvoiceService {
         Invoice existingInvoice = invoiceRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Invoice not found"));
 
- 
         Timestamp currentTime = Timestamp.from(Instant.now());
         Duration duration = Duration.between(existingInvoice.getInvoiceDate().toInstant(), currentTime.toInstant());
         if (duration.toMinutes() > 10) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invoice can only be edited within 10 minutes of creation");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "Invoice can only be edited within 10 minutes of creation");
         }
 
         invoiceProductRepository.deleteByInvoice(existingInvoice);
@@ -186,8 +186,6 @@ public class InvoiceServiceImpl implements InvoiceService {
         return savedInvoice.toDTO();
     }
 
-
-
     private String generateInactiveProductMessage(Set<String> inactiveProductIds) {
         if (inactiveProductIds.size() == 1) {
             return "Product " + inactiveProductIds.iterator().next() + " is inactive";
@@ -222,9 +220,11 @@ public class InvoiceServiceImpl implements InvoiceService {
     public InvoiceProductDTO addInvoiceProduct(InvoiceProductDTO invoiceProductDTO) {
         InvoiceProduct invoiceProduct = invoiceProductDTO.toEntity();
         Invoice invoice = invoiceRepository.findById(invoiceProductDTO.getInvoice().getId())
-                .orElseThrow(() -> new ResourceNotFoundException("Invoice not found with id: " + invoiceProductDTO.getInvoice().getId()));
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Invoice not found with id: " + invoiceProductDTO.getInvoice().getId()));
         Product product = productRepository.findById(invoiceProductDTO.getProduct().getId())
-                .orElseThrow(() -> new ResourceNotFoundException("Product not found with id: " + invoiceProductDTO.getProduct().getId()));
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Product not found with id: " + invoiceProductDTO.getProduct().getId()));
 
         if (invoice.getCustomer().getStatus() != Status.ACTIVE) {
             throw new InactiveCustomerException("Customer is inactive");
@@ -236,13 +236,15 @@ public class InvoiceServiceImpl implements InvoiceService {
 
         invoiceProduct.setInvoice(invoice);
         invoiceProduct.setProduct(product);
-        invoiceProduct.setAmount(invoiceProductDTO.getPrice().multiply(new BigDecimal(invoiceProductDTO.getQuantity())));
+        invoiceProduct
+                .setAmount(invoiceProductDTO.getPrice().multiply(new BigDecimal(invoiceProductDTO.getQuantity())));
         invoiceProduct = invoiceProductRepository.save(invoiceProduct);
         return invoiceProduct.toDTO();
     }
 
     @Override
-    public List<InvoiceDTO> getInvoicesByCriteria(String customerId, String customerName, int year, int month, String invoiceAmountCondition, BigDecimal invoiceAmount, int page, int size) {
+    public List<InvoiceDTO> getInvoicesByCriteria(String customerId, String customerName, int year, int month,
+            String invoiceAmountCondition, BigDecimal invoiceAmount, int page, int size) {
         InvoiceSpecificationsBuilder builder = new InvoiceSpecificationsBuilder();
 
         if (customerId != null && !customerId.isEmpty()) {
@@ -271,18 +273,17 @@ public class InvoiceServiceImpl implements InvoiceService {
     }
 
     @Override
-public byte[] exportAllInvoicesToPDF() {
-    List<InvoiceProduct> invoiceProducts = invoiceProductRepository.findAllWithDetails();
-    try {
-        return pdfUtils.generateAllInvoicesPDF(invoiceProducts);
-    } catch (IOException e) {
-        throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to export the PDF: " + e.getMessage());
+    public byte[] exportAllInvoicesToPDF() {
+        List<InvoiceProduct> invoiceProducts = invoiceProductRepository.findAllWithDetails();
+        try {
+            return pdfUtils.generateAllInvoicesPDF(invoiceProducts);
+        } catch (IOException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
+                    "Failed to export the PDF: " + e.getMessage());
+        }
     }
-}
 
-    
-
-     @Override
+    @Override
     public List<RevenueReportDTO> getRevenueByPeriod(Integer year, Integer month, Integer day) {
         Timestamp startDate = null;
         Timestamp endDate = null;
@@ -307,7 +308,8 @@ public byte[] exportAllInvoicesToPDF() {
             Timestamp invoiceDate = invoice.getInvoiceDate();
             if (matchesPeriod(invoiceDate, year, month, day)) {
                 String dateKey = invoiceDate.toLocalDateTime().toLocalDate().toString();
-                revenueMap.put(dateKey, revenueMap.getOrDefault(dateKey, BigDecimal.ZERO).add(invoice.getInvoiceAmount()));
+                revenueMap.put(dateKey,
+                        revenueMap.getOrDefault(dateKey, BigDecimal.ZERO).add(invoice.getInvoiceAmount()));
             }
         }
 

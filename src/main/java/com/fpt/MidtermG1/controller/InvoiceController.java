@@ -4,18 +4,14 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 import com.fpt.MidtermG1.dto.RevenueReportDTO;
 import com.fpt.MidtermG1.util.ExcelUtil;
 
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.http.ContentDisposition;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -29,8 +25,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fpt.MidtermG1.dto.InvoiceDTO;
 import com.fpt.MidtermG1.dto.InvoiceProductDTO;
 import com.fpt.MidtermG1.service.InvoiceService;
-import com.fpt.MidtermG1.util.ExcelUtil;
-
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 
@@ -41,11 +35,10 @@ public class InvoiceController {
     private final InvoiceService invoiceService;
 
     @PostMapping
-public ResponseEntity<InvoiceDTO> addInvoice(@RequestBody InvoiceDTO invoiceDTO) {
-    InvoiceDTO createdInvoice = invoiceService.addInvoice(invoiceDTO);
-    return ResponseEntity.ok(createdInvoice);
-}
-
+    public ResponseEntity<InvoiceDTO> addInvoice(@RequestBody InvoiceDTO invoiceDTO) {
+        InvoiceDTO createdInvoice = invoiceService.addInvoice(invoiceDTO);
+        return ResponseEntity.ok(createdInvoice);
+    }
 
     @PutMapping("/{id}")
     public ResponseEntity<InvoiceDTO> editInvoice(@PathVariable String id, @RequestBody InvoiceDTO invoiceDTO) {
@@ -62,19 +55,19 @@ public ResponseEntity<InvoiceDTO> addInvoice(@RequestBody InvoiceDTO invoiceDTO)
     @GetMapping
     public ResponseEntity<List<InvoiceDTO>> getAllInvoices(
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size
-    ) {
+            @RequestParam(defaultValue = "10") int size) {
         List<InvoiceDTO> invoices = invoiceService.getAllInvoices(page, size);
         return ResponseEntity.ok(invoices);
     }
 
     @PostMapping("/products")
-    public ResponseEntity<InvoiceProductDTO> addInvoiceProduct(@Valid @RequestBody InvoiceProductDTO invoiceProductDTO) {
+    public ResponseEntity<InvoiceProductDTO> addInvoiceProduct(
+            @Valid @RequestBody InvoiceProductDTO invoiceProductDTO) {
         InvoiceProductDTO createdInvoiceProduct = invoiceService.addInvoiceProduct(invoiceProductDTO);
         return ResponseEntity.status(201).body(createdInvoiceProduct);
     }
 
-   @GetMapping("/search")
+    @GetMapping("/search")
     public ResponseEntity<List<InvoiceDTO>> getInvoicesByCriteria(
             @RequestParam(required = false) String customerId,
             @RequestParam(required = false) String customerName,
@@ -83,9 +76,9 @@ public ResponseEntity<InvoiceDTO> addInvoice(@RequestBody InvoiceDTO invoiceDTO)
             @RequestParam(required = false) String invoiceAmountCondition,
             @RequestParam(required = false) BigDecimal invoiceAmount,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size
-    ) {
-        List<InvoiceDTO> invoices = invoiceService.getInvoicesByCriteria(customerId, customerName, year, month, invoiceAmountCondition, invoiceAmount, page, size);
+            @RequestParam(defaultValue = "10") int size) {
+        List<InvoiceDTO> invoices = invoiceService.getInvoicesByCriteria(customerId, customerName, year, month,
+                invoiceAmountCondition, invoiceAmount, page, size);
         return ResponseEntity.ok(invoices);
     }
 
@@ -93,60 +86,50 @@ public ResponseEntity<InvoiceDTO> addInvoice(@RequestBody InvoiceDTO invoiceDTO)
     public ResponseEntity<String> exportToPDF() {
         byte[] pdfBytes = invoiceService.exportAllInvoicesToPDF();
 
-        // Determine the path for saving the file
         Path path = Paths.get("src/main/resources/invoices.pdf");
         File file = path.toFile();
-        
-        // Save file to resources folder
+
         try (FileOutputStream fos = new FileOutputStream(file)) {
             fos.write(pdfBytes);
         } catch (IOException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error saving file: " + e.getMessage());
         }
 
-        // Return a response indicating the file was saved
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "text/plain");
         return ResponseEntity.ok().headers(headers).body("File saved to " + path.toAbsolutePath());
     }
 
-    
-    
-
     @GetMapping("/export-excel")
-public ResponseEntity<String> exportInvoicesToExcel(@RequestParam(required = false) String customerId,
-                                                     @RequestParam(required = false) String customerName,
-                                                     @RequestParam(required = false) Integer year,
-                                                     @RequestParam(required = false) Integer month,
-                                                     @RequestParam(required = false) String invoiceAmountCondition,
-                                                     @RequestParam(required = false) BigDecimal invoiceAmount) throws IOException {
-    // Retrieve invoices based on criteria
-    List<InvoiceDTO> invoices = invoiceService.getInvoicesByCriteria(
-            customerId, customerName, year != null ? year : 0, month != null ? month : 0, invoiceAmountCondition, invoiceAmount, 0, Integer.MAX_VALUE);
+    public ResponseEntity<String> exportInvoicesToExcel(@RequestParam(required = false) String customerId,
+            @RequestParam(required = false) String customerName,
+            @RequestParam(required = false) Integer year,
+            @RequestParam(required = false) Integer month,
+            @RequestParam(required = false) String invoiceAmountCondition,
+            @RequestParam(required = false) BigDecimal invoiceAmount) throws IOException {
 
-    // Generate Excel content
-    byte[] excelContent = ExcelUtil.exportInvoicesToExcel(invoices);
+        List<InvoiceDTO> invoices = invoiceService.getInvoicesByCriteria(
+                customerId, customerName, year != null ? year : 0, month != null ? month : 0, invoiceAmountCondition,
+                invoiceAmount, 0, Integer.MAX_VALUE);
 
-    // Determine the path for saving the file
-    Path path = Paths.get("src/main/resources/invoices.xlsx");
-    File file = path.toFile();
-    
-    // Save file to resources folder
-    try (FileOutputStream fos = new FileOutputStream(file)) {
-        fos.write(excelContent);
+        byte[] excelContent = ExcelUtil.exportInvoicesToExcel(invoices);
+
+        Path path = Paths.get("src/main/resources/invoices.xlsx");
+        File file = path.toFile();
+
+        try (FileOutputStream fos = new FileOutputStream(file)) {
+            fos.write(excelContent);
+        }
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Type", "text/plain");
+        return ResponseEntity.ok().headers(headers).body("File saved to " + path.toAbsolutePath());
     }
-
-    // Return a response indicating the file was saved
-    HttpHeaders headers = new HttpHeaders();
-    headers.add("Content-Type", "text/plain");
-    return ResponseEntity.ok().headers(headers).body("File saved to " + path.toAbsolutePath());
-}
-
 
     @GetMapping("/report")
     public List<RevenueReportDTO> getRevenueReport(@RequestParam(required = false) Integer year,
-                                                   @RequestParam(required = false) Integer month,
-                                                   @RequestParam(required = false) Integer day) {
+            @RequestParam(required = false) Integer month,
+            @RequestParam(required = false) Integer day) {
         return invoiceService.getRevenueByPeriod(year, month, day);
     }
 

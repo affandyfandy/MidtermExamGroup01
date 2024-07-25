@@ -2,10 +2,8 @@ package com.fpt.MidtermG1.controller;
 
 import com.fpt.MidtermG1.dto.ProductDTO;
 import com.fpt.MidtermG1.service.ProductService;
-import com.fpt.MidtermG1.service.impl.ProductServiceImpl;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -26,10 +24,10 @@ public class ProductController {
 
     @GetMapping
     public Page<ProductDTO> getAllProducts(@RequestParam(defaultValue = "0") int page,
-                                           @RequestParam(defaultValue = "10") int size,
-                                           @RequestParam(required = false) String search,
-                                           @RequestParam(defaultValue = "name") String sortBy,
-                                           @RequestParam(defaultValue = "asc") String sortDir) {
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(required = false) String search,
+            @RequestParam(defaultValue = "name") String sortBy,
+            @RequestParam(defaultValue = "asc") String sortDir) {
         Sort sort = Sort.by(Sort.Direction.fromString(sortDir), sortBy);
         Pageable pageable = PageRequest.of(page, size, sort);
         return productService.listAllProduct(pageable, search);
@@ -59,12 +57,13 @@ public class ProductController {
             throw new RuntimeException(e);
         }
     }
-    @PutMapping(value="/activate/{id}")
+
+    @PutMapping(value = "/activate/{id}")
     public ResponseEntity<ProductDTO> activateStatus(@PathVariable int id) {
         return ResponseEntity.ok(productService.activateProduct(id));
     }
 
-    @PutMapping(value="/deactivate/{id}")
+    @PutMapping(value = "/deactivate/{id}")
     public ResponseEntity<ProductDTO> deactivateStatus(@PathVariable int id) {
         return ResponseEntity.ok(productService.deactivateProduct(id));
     }

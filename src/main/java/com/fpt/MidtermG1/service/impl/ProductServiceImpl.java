@@ -10,7 +10,6 @@ import com.fpt.MidtermG1.service.ProductService;
 import com.fpt.MidtermG1.specifications.ProductSpecificationsBuilder;
 import com.fpt.MidtermG1.util.ExcelUtil;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -43,27 +42,26 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Optional<ProductDTO> findProductById(int id){
+    public Optional<ProductDTO> findProductById(int id) {
         Optional<Product> productOpt = productRepository.findById(id);
-        if (productOpt.isEmpty()){
+        if (productOpt.isEmpty()) {
             throw new ResourceNotFoundException("Product not found for this id : " + id);
         }
         return productOpt.map(Product::toDTO);
     }
 
     @Override
-    public ProductDTO saveProduct(ProductDTO productDTO){
+    public ProductDTO saveProduct(ProductDTO productDTO) {
         Product savedProduct = productRepository.save(productDTO.toEntity());
         return savedProduct.toDTO();
     }
 
     @Override
-    public Optional<ProductDTO> updateProduct(int id, ProductDTO productDTO){
+    public Optional<ProductDTO> updateProduct(int id, ProductDTO productDTO) {
         Optional<Product> productOpt = productRepository.findById(id);
-        if (productOpt.isEmpty()){
+        if (productOpt.isEmpty()) {
             throw new ResourceNotFoundException("Product not found for this id : " + id);
-        }
-        else{
+        } else {
             Product product = productOpt.get();
             product.setName(productDTO.getName());
             product.setPrice(productDTO.getPrice());
@@ -71,7 +69,7 @@ public class ProductServiceImpl implements ProductService {
             product.setCreatedTime(productDTO.getCreatedTime());
             product.setUpdatedTime(productDTO.getUpdatedTime());
 
-            if (productDTO.getInvoiceProducts() != null){
+            if (productDTO.getInvoiceProducts() != null) {
                 product.setInvoiceProducts(productDTO.getInvoiceProducts().stream()
                         .map(InvoiceProductDTO::toEntity)
                         .collect(Collectors.toSet()));

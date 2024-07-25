@@ -42,6 +42,5 @@ public class InvoiceDTO {
                 .collect(Collectors.toSet()));
         return invoice;
     }
-    
-    
+
 }

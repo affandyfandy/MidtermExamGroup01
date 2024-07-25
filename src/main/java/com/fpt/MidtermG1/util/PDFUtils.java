@@ -6,8 +6,6 @@ import java.util.List;
 import org.springframework.stereotype.Component;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.spring6.SpringTemplateEngine;
-
-import com.fpt.MidtermG1.data.entity.Invoice;
 import com.fpt.MidtermG1.data.entity.InvoiceProduct;
 import com.itextpdf.html2pdf.HtmlConverter;
 import com.itextpdf.io.source.ByteArrayOutputStream;

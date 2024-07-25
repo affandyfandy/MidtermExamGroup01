@@ -83,7 +83,7 @@ public class CustomerServiceImpl implements CustomerService {
         } else {
             throw new RuntimeException("Customer status already " + customer.getStatus());
         }
-        
+
         return customerRepository.save(customer).toDTO();
     }
 
@@ -97,7 +97,7 @@ public class CustomerServiceImpl implements CustomerService {
         } else {
             throw new RuntimeException("Customer status already " + customer.getStatus());
         }
-        
+
         return customerRepository.save(customer).toDTO();
     }
 }
