@@ -2,11 +2,15 @@ package com.fpt.MidtermG1.util;
 
 import com.fpt.MidtermG1.data.entity.Product;
 import com.fpt.MidtermG1.common.Status;
+import com.fpt.MidtermG1.dto.InvoiceDTO;
+import com.fpt.MidtermG1.dto.InvoiceProductDTO;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
@@ -116,4 +120,105 @@ public class ExcelUtil {
             return new Timestamp(System.currentTimeMillis());
         }
     }
+
+    public static byte[] exportInvoicesToExcel(List<InvoiceDTO> invoices) throws IOException {
+        try (XSSFWorkbook workbook = new XSSFWorkbook()) {
+            XSSFSheet sheet = workbook.createSheet("Invoices");
+
+            int rowNum = 0;
+            Row headerRow = sheet.createRow(rowNum++);
+            createHeaderRow(headerRow);
+
+            for (InvoiceDTO invoice : invoices) {
+                if (invoice.getInvoiceProducts() != null && !invoice.getInvoiceProducts().isEmpty()) {
+                    for (InvoiceProductDTO invoiceProduct : invoice.getInvoiceProducts()) {
+                        Row row = sheet.createRow(rowNum++);
+                        createInvoiceProductRow(row, invoiceProduct, invoice);
+                    }
+                } else {
+                    Row row = sheet.createRow(rowNum++);
+                    createInvoiceRow(row, invoice);
+                }
+            }
+
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            workbook.write(outputStream);
+            return outputStream.toByteArray();
+        }
+    }
+
+    private static void createHeaderRow(Row row) {
+        Cell cell = row.createCell(0);
+        cell.setCellValue("Invoice ID");
+
+        cell = row.createCell(1);
+        cell.setCellValue("Customer ID");
+
+        cell = row.createCell(2);
+        cell.setCellValue("Customer Name");
+
+        cell = row.createCell(3);
+        cell.setCellValue("Invoice Amount");
+
+        cell = row.createCell(4);
+        cell.setCellValue("Invoice Date");
+
+        cell = row.createCell(5);
+        cell.setCellValue("Updated Date");
+
+    }
+
+    private static void createInvoiceRow(Row row, InvoiceDTO invoice) {
+        Cell cell = row.createCell(0);
+        cell.setCellValue(invoice.getId());
+
+        cell = row.createCell(1);
+        cell.setCellValue(invoice.getCustomer().getId());
+
+        cell = row.createCell(2);
+        cell.setCellValue(invoice.getCustomer().getName());
+
+        cell = row.createCell(3);
+        cell.setCellValue(invoice.getInvoiceAmount().doubleValue());
+
+        cell = row.createCell(4);
+        cell.setCellValue(invoice.getInvoiceDate().toString());
+
+        cell = row.createCell(5);
+        cell.setCellValue(invoice.getUpdatedTime().toString());
+        
+    }
+
+    private static void createInvoiceProductRow(Row row, InvoiceProductDTO invoiceProduct, InvoiceDTO invoice) {
+        Cell cell = row.createCell(0);
+        cell.setCellValue(invoice.getId());
+
+        cell = row.createCell(1);
+        cell.setCellValue(invoice.getCustomer().getId());
+
+        cell = row.createCell(2);
+        cell.setCellValue(invoice.getCustomer().getName());
+
+        cell = row.createCell(3);
+        cell.setCellValue(invoice.getInvoiceAmount().doubleValue());
+
+        cell = row.createCell(4);
+        cell.setCellValue(invoice.getInvoiceDate().toString());
+
+        cell = row.createCell(5);
+        cell.setCellValue(invoiceProduct.getProduct().getId());
+
+        cell = row.createCell(6);
+        cell.setCellValue(invoiceProduct.getProduct().getName());
+
+        cell = row.createCell(7);
+        cell.setCellValue(invoiceProduct.getProduct().getPrice().doubleValue());
+
+        cell = row.createCell(8);
+        cell.setCellValue(invoiceProduct.getQuantity());
+
+        cell = row.createCell(9);
+        cell.setCellValue(invoiceProduct.getAmount().doubleValue());
+    }
 }
+

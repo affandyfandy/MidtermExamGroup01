@@ -11,6 +11,8 @@ public interface CustomerService {
     Page<CustomerDTO> getCustomerList(Pageable pageable);
     Page<CustomerDTO> searchCustomers(String keyword, Pageable pageable);
     Optional<CustomerDTO> getCusromerById(String id);
+    CustomerDTO activateCustomer(String id);
+    CustomerDTO deactivateCustomer(String id);
     CustomerDTO addCustomer(CustomerDTO body);
     CustomerDTO editCustomer(String id, CustomerDTO body);
 }

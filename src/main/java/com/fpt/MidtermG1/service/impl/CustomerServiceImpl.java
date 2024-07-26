@@ -6,10 +6,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import com.fpt.MidtermG1.common.Status;
 import com.fpt.MidtermG1.data.entity.Customer;
 import com.fpt.MidtermG1.data.repository.CustomerRepository;
 import com.fpt.MidtermG1.data.specification.CustomerSpecification;
 import com.fpt.MidtermG1.dto.CustomerDTO;
+import com.fpt.MidtermG1.exception.ResourceNotFoundException;
 import com.fpt.MidtermG1.service.CustomerService;
 
 import jakarta.validation.Valid;
@@ -69,5 +71,33 @@ public class CustomerServiceImpl implements CustomerService {
         } else {
             throw new RuntimeException("Customer not found with id: " + id);
         }
+    }
+
+    @Override
+    public CustomerDTO activateCustomer(String id) {
+        Customer customer = customerRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Customer not found with id: " + id));
+
+        if (customer.getStatus() == Status.INACTIVE) {
+            customer.setStatus(Status.ACTIVE);
+        } else {
+            throw new RuntimeException("Customer status already " + customer.getStatus());
+        }
+
+        return customerRepository.save(customer).toDTO();
+    }
+
+    @Override
+    public CustomerDTO deactivateCustomer(String id) {
+        Customer customer = customerRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Customer not found with id: " + id));
+
+        if (customer.getStatus() == Status.ACTIVE) {
+            customer.setStatus(Status.INACTIVE);
+        } else {
+            throw new RuntimeException("Customer status already " + customer.getStatus());
+        }
+
+        return customerRepository.save(customer).toDTO();
     }
 }
