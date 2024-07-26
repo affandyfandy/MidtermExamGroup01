@@ -23,9 +23,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fpt.MidtermG1.dto.InvoiceDTO;
-import com.fpt.MidtermG1.dto.InvoiceProductDTO;
 import com.fpt.MidtermG1.service.InvoiceService;
-import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 
 @RestController
@@ -58,13 +56,6 @@ public class InvoiceController {
             @RequestParam(defaultValue = "10") int size) {
         List<InvoiceDTO> invoices = invoiceService.getAllInvoices(page, size);
         return ResponseEntity.ok(invoices);
-    }
-
-    @PostMapping("/products")
-    public ResponseEntity<InvoiceProductDTO> addInvoiceProduct(
-            @Valid @RequestBody InvoiceProductDTO invoiceProductDTO) {
-        InvoiceProductDTO createdInvoiceProduct = invoiceService.addInvoiceProduct(invoiceProductDTO);
-        return ResponseEntity.status(201).body(createdInvoiceProduct);
     }
 
     @GetMapping("/search")
