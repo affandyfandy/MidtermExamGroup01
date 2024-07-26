@@ -19,8 +19,8 @@ This project is a simple web application built using Spring Boot for managing cu
 ### Business Flow Diagram
 ![img_1.png](img/InvoiceManagement.jpg)
 
-### Class Diagram
-![img.png](img/img.png)
+### Database Design
+![alt text](img/image-3.png)
 
 ### Running the Application
 1. Create MySQL database named midtermg1, configure the username and password in the `application.properties`
