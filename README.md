@@ -16,9 +16,6 @@ This project is a simple web application built using Spring Boot for managing cu
 - Maven 3.6.0 or higher
 - MySQL 8.0 or higher
 
-### Business Flow Diagram
-![img_1.png](img/InvoiceManagement.jpg)
-
 ### Database Design
 ![alt text](img/image-3.png)
 
