@@ -17,7 +17,66 @@ This project is a simple web application built using Spring Boot for managing cu
 - MySQL 8.0 or higher
 
 ### Project Structure
-
+```cmd
+├───java
+│   └───com
+│       └───fpt
+│           └───MidtermG1
+│               │   MidtermGroup1Application.java
+│               │
+│               ├───common
+│               │       Status.java
+│               │
+│               ├───controller
+│               │       CustomerController.java
+│               │       ProductController.java
+│               │
+│               ├───data
+│               │   ├───entity
+│               │   │       Customer.java
+│               │   │       Invoice.java
+│               │   │       InvoiceProduct.java
+│               │   │       InvoiceProductId.java
+│               │   │       Product.java
+│               │   │
+│               │   ├───repository
+│               │   │       CustomerRepository.java
+│               │   │       InvoiceProductRepository.java
+│               │   │       ProductRepository.java
+│               │   │
+│               │   └───specification
+│               │           CustomerSpecification.java
+│               │
+│               ├───dto
+│               │       CustomerDTO.java
+│               │       InvoiceDTO.java
+│               │       InvoiceProductDTO.java
+│               │       ProductDTO.java
+│               │
+│               ├───exception
+│               │       ResourceNotFoundException.java
+│               │
+│               ├───service
+│               │   │   CustomerService.java
+│               │   │   ProductService.java
+│               │   │
+│               │   └───impl
+│               │           CustomerServiceImpl.java
+│               │           ProductServiceImpl.java
+│               │
+│               ├───specifications
+│               │       ProductSpecification.java
+│               │       ProductSpecificationsBuilder.java
+│               │       SearchCriteria.java
+│               │
+│               └───util
+│                       ExcelUtil.java
+│
+└───resources
+    │   application.properties
+    │
+    └───static
+```
 
 ### Business Flow Diagram
 ![img_1.png](img_1.png)
@@ -35,3 +94,13 @@ When the app is running, the API list can be seen at `http://localhost:8080/swag
 
 ### Insert Inital Data
 For initial data, use [init.sql](file%2Finit.sql)
+
+### Example Data
+Example data is available on [file](file)
+
+### Member
+| GitHub                                                               | Name                            |
+|----------------------------------------------------------------------|---------------------------------|
+| [manuellaiv](https://github.com/manuellaiv)                          | Manuella Ivana Uli Sianipar     |
+| [irhamnaufal8](https://github.com/irhamnaufal8)                      | Muhammad Irham Naufal Al Machdi |
+| [ryuzakijebi](https://github.com/ryuzakijebi)                                              | Jebi Hendardi                   |
