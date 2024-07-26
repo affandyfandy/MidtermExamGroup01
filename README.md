@@ -16,9 +16,6 @@ This project is a simple web application built using Spring Boot for managing cu
 - Maven 3.6.0 or higher
 - MySQL 8.0 or higher
 
-### Project Structure
-
-
 ### Business Flow Diagram
 ![img_1.png](InvoiceManagement.jpg)
 
@@ -36,114 +33,52 @@ When the app is running, the API list can be seen at `http://localhost:8080/swag
 ### Insert Inital Data
 For initial data, use [init.sql](file%2Finit.sql)
 
+### Example Data
+Example data is available on [file](file)
+
+### Member
+| GitHub                                                               | Name                            |
+|----------------------------------------------------------------------|---------------------------------|
+| [manuellaiv](https://github.com/manuellaiv)                          | Manuella Ivana Uli Sianipar     |
+| [irhamnaufal8](https://github.com/irhamnaufal8)                      | Muhammad Irham Naufal Al Machdi |
+| [ryuzakijebi](https://github.com/ryuzakijebi)                                              | Jebi Hendardi                   |
+
+
+
 #
 ### API List
-### Customer APIs
-1. **Get Customer List:**
-   - Method: `GET`
-   - URL: `http://localhost:8080/api/v1/customers`
-   - Params: `page`, `size`, `keyword` (optional)
+#### Customer APIs
 
-2. **Get Customer by ID:**
-   - Method: `GET`
-   - URL: `http://localhost:8080/api/v1/customers/{id}`
-   - Replace `{id}` with a specific customer ID.
-
-3. **Add Customer:**
-   - Method: `POST`
-   - URL: `http://localhost:8080/api/v1/customers`
-   - Body: Select `raw` and `JSON` format, then provide the customer data as JSON.
-
-4. **Edit Customer:**
-   - Method: `PUT`
-   - URL: `http://localhost:8080/api/v1/customers/{id}`
-   - Replace `{id}` with the specific customer ID.
-   - Body: Select `raw` and `JSON` format, then provide the updated customer data as JSON.
-
-5. **Activate Customer:**
-   - Method: `PUT`
-   - URL: `http://localhost:8080/api/v1/customers/activate/{id}`
-   - Replace `{id}` with the specific customer ID.
-
-6. **Deactivate Customer:**
-   - Method: `PUT`
-   - URL: `http://localhost:8080/api/v1/customers/deactivate/{id}`
-   - Replace `{id}` with the specific customer ID.
-
+| Action               | Method | URL                                                       | Params/Body                      |
+|----------------------|--------|-----------------------------------------------------------|----------------------------------|
+| Get Customer List    | GET    | `http://localhost:8080/api/v1/customers`                  | `page`, `size`, `keyword` (optional) |
+| Get Customer by ID   | GET    | `http://localhost:8080/api/v1/customers/{id}`             | Replace `{id}` with customer ID  |
+| Add Customer         | POST   | `http://localhost:8080/api/v1/customers`                  | JSON body with customer data     |
+| Edit Customer        | PUT    | `http://localhost:8080/api/v1/customers/{id}`             | Replace `{id}` with customer ID, JSON body with updated data |
+| Activate Customer    | PUT    | `http://localhost:8080/api/v1/customers/activate/{id}`    | Replace `{id}` with customer ID  |
+| Deactivate Customer  | PUT    | `http://localhost:8080/api/v1/customers/deactivate/{id}`  | Replace `{id}` with customer ID  |
+#
 ### Invoice APIs
-1. **Add Invoice:**
-   - Method: `POST`
-   - URL: `http://localhost:8080/api/v1/invoices`
-   - Body: Select `raw` and `JSON` format, then provide the invoice data as JSON.
 
-2. **Edit Invoice:**
-   - Method: `PUT`
-   - URL: `http://localhost:8080/api/v1/invoices/{id}`
-   - Replace `{id}` with the specific invoice ID.
-   - Body: Select `raw` and `JSON` format, then provide the updated invoice data as JSON.
-
-3. **Get Invoice by ID:**
-   - Method: `GET`
-   - URL: `http://localhost:8080/api/v1/invoices/{id}`
-   - Replace `{id}` with the specific invoice ID.
-
-4. **Get All Invoices:**
-   - Method: `GET`
-   - URL: `http://localhost:8080/api/v1/invoices`
-   - Params: `page`, `size`
-
-5. **Add Invoice Product:**
-   - Method: `POST`
-   - URL: `http://localhost:8080/api/v1/invoices/products`
-   - Body: Select `raw` and `JSON` format, then provide the invoice product data as JSON.
-
-6. **Search Invoices by Criteria:**
-   - Method: `GET`
-   - URL: `http://localhost:8080/api/v1/invoices/search`
-   - Params: `customerId`, `customerName`, `year`, `month`, `invoiceAmountCondition`, `invoiceAmount`, `page`, `size`
-
-7. **Export Invoices to PDF:**
-   - Method: `GET`
-   - URL: `http://localhost:8080/api/v1/invoices/export-pdf`
-
-8. **Export Invoices to Excel:**
-   - Method: `GET`
-   - URL: `http://localhost:8080/api/v1/invoices/export-excel`
-   - Params: `customerId`, `customerName`, `year`, `month`, `invoiceAmountCondition`, `invoiceAmount`
-
-9. **Get Revenue Report:**
-   - Method: `GET`
-   - URL: `http://localhost:8080/api/v1/invoices/report`
-   - Params: `year`, `month`, `day`
-
+| Action                 | Method | URL                                                        | Params/Body                       |
+|------------------------|--------|------------------------------------------------------------|-----------------------------------|
+| Add Invoice            | POST   | `http://localhost:8080/api/v1/invoices`                    | JSON body with invoice data       |
+| Edit Invoice           | PUT    | `http://localhost:8080/api/v1/invoices/{id}`               | Replace `{id}` with invoice ID, JSON body with updated data |
+| Get Invoice by ID      | GET    | `http://localhost:8080/api/v1/invoices/{id}`               | Replace `{id}` with invoice ID    |
+| Get All Invoices       | GET    | `http://localhost:8080/api/v1/invoices`                    | `page`, `size`                    |
+| Add Invoice Product    | POST   | `http://localhost:8080/api/v1/invoices/products`           | JSON body with invoice product data |
+| Search Invoices        | GET    | `http://localhost:8080/api/v1/invoices/search`             | `customerId`, `customerName`, `year`, `month`, `invoiceAmountCondition`, `invoiceAmount`, `page`, `size` |
+| Export Invoices to PDF | GET    | `http://localhost:8080/api/v1/invoices/export-pdf`         | None                              |
+| Export Invoices to Excel | GET  | `http://localhost:8080/api/v1/invoices/export-excel`       | `customerId`, `customerName`, `year`, `month`, `invoiceAmountCondition`, `invoiceAmount` |
+| Get Revenue Report     | GET    | `http://localhost:8080/api/v1/invoices/report`             | `year`, `month`, `day`            |
+#
 ### Product APIs
-1. **Get All Products:**
-   - Method: `GET`
-   - URL: `http://localhost:8080/api/v1/products`
-   - Params: `page`, `size`, `search`, `sortBy`, `sortDir`
 
-2. **Add Product:**
-   - Method: `POST`
-   - URL: `http://localhost:8080/api/v1/products`
-   - Body: Select `raw` and `JSON` format, then provide the product data as JSON.
-
-3. **Edit Product:**
-   - Method: `PUT`
-   - URL: `http://localhost:8080/api/v1/products/{id}`
-   - Replace `{id}` with the specific product ID.
-   - Body: Select `raw` and `JSON` format, then provide the updated product data as JSON.
-
-4. **Import Products:**
-   - Method: `POST`
-   - URL: `http://localhost:8080/api/v1/products/import`
-   - Body: Select `form-data` and add a key `file` with type `file`, then upload the file.
-
-5. **Activate Product:**
-   - Method: `PUT`
-   - URL: `http://localhost:8080/api/v1/products/activate/{id}`
-   - Replace `{id}` with the specific product ID.
-
-6. **Deactivate Product:**
-   - Method: `PUT`
-   - URL: `http://localhost:8080/api/v1/products/deactivate/{id}`
-   - Replace `{id}` with the specific product ID.
+| Action               | Method | URL                                                       | Params/Body                      |
+|----------------------|--------|-----------------------------------------------------------|----------------------------------|
+| Get All Products     | GET    | `http://localhost:8080/api/v1/products`                   | `page`, `size`, `search`, `sortBy`, `sortDir` |
+| Add Product          | POST   | `http://localhost:8080/api/v1/products`                   | JSON body with product data      |
+| Edit Product         | PUT    | `http://localhost:8080/api/v1/products/{id}`              | Replace `{id}` with product ID, JSON body with updated data |
+| Import Products      | POST   | `http://localhost:8080/api/v1/products/import`            | `form-data` key `file` with file upload |
+| Activate Product     | PUT    | `http://localhost:8080/api/v1/products/activate/{id}`     | Replace `{id}` with product ID   |
+| Deactivate Product   | PUT    | `http://localhost:8080/api/v1/products/deactivate/{id}`   | Replace `{id}` with product ID   |
