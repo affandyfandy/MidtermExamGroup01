@@ -29,6 +29,7 @@ This project is a simple web application built using Spring Boot for managing cu
 │               │
 │               ├───controller
 │               │       CustomerController.java
+│               │       InvoiceController.java
 │               │       ProductController.java
 │               │
 │               ├───data
@@ -42,40 +43,55 @@ This project is a simple web application built using Spring Boot for managing cu
 │               │   ├───repository
 │               │   │       CustomerRepository.java
 │               │   │       InvoiceProductRepository.java
+│               │   │       InvoiceRepository.java
 │               │   │       ProductRepository.java
 │               │   │
 │               │   └───specification
 │               │           CustomerSpecification.java
+│               │           InvoiceSpecification.java
 │               │
 │               ├───dto
 │               │       CustomerDTO.java
 │               │       InvoiceDTO.java
 │               │       InvoiceProductDTO.java
 │               │       ProductDTO.java
+│               │       RevenueReportDTO.java
 │               │
 │               ├───exception
+│               │       ErrorResponse.java
+│               │       GlobalExceptionHandler.java
+│               │       InactiveCustomerException.java
+│               │       InactiveProductException.java
 │               │       ResourceNotFoundException.java
 │               │
 │               ├───service
 │               │   │   CustomerService.java
+│               │   │   InvoiceService.java
 │               │   │   ProductService.java
 │               │   │
 │               │   └───impl
 │               │           CustomerServiceImpl.java
+│               │           InvoiceServiceImpl.java
 │               │           ProductServiceImpl.java
 │               │
 │               ├───specifications
+│               │       InvoiceSpecification.java
+│               │       InvoiceSpecificationsBuilder.java
 │               │       ProductSpecification.java
 │               │       ProductSpecificationsBuilder.java
 │               │       SearchCriteria.java
 │               │
 │               └───util
 │                       ExcelUtil.java
+│                       PDFUtils.java
 │
 └───resources
     │   application.properties
+    │   invoices.pdf
     │
-    └───static
+    ├───static
+    └───templates
+            invoice-template.html
 ```
 
 ### Business Flow Diagram
