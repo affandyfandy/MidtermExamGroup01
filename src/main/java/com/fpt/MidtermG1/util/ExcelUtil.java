@@ -164,19 +164,8 @@ public class ExcelUtil {
         cell.setCellValue("Invoice Date");
 
         cell = row.createCell(5);
-        cell.setCellValue("Product ID");
+        cell.setCellValue("Updated Date");
 
-        cell = row.createCell(6);
-        cell.setCellValue("Product Name");
-
-        cell = row.createCell(7);
-        cell.setCellValue("Product Price");
-
-        cell = row.createCell(8);
-        cell.setCellValue("Product Quantity");
-
-        cell = row.createCell(9);
-        cell.setCellValue("Product Amount");
     }
 
     private static void createInvoiceRow(Row row, InvoiceDTO invoice) {
@@ -194,6 +183,10 @@ public class ExcelUtil {
 
         cell = row.createCell(4);
         cell.setCellValue(invoice.getInvoiceDate().toString());
+
+        cell = row.createCell(5);
+        cell.setCellValue(invoice.getUpdatedTime().toString());
+        
     }
 
     private static void createInvoiceProductRow(Row row, InvoiceProductDTO invoiceProduct, InvoiceDTO invoice) {
