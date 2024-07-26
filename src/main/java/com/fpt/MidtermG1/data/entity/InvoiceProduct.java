@@ -1,6 +1,7 @@
 package com.fpt.MidtermG1.data.entity;
 
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 
 import com.fpt.MidtermG1.dto.InvoiceProductDTO;
 
@@ -36,12 +37,29 @@ public class InvoiceProduct {
     private BigDecimal amount;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "invoice_id", nullable = false)
+    @JoinColumn(name = "invoice_id", insertable = false, updatable = false)
     private Invoice invoice;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "product_id", nullable = false)
+    @JoinColumn(name = "product_id", insertable = false, updatable = false)
     private Product product;
+
+    @Column(name = "created_time", nullable = false, updatable = false)
+    private Timestamp createdTime;
+
+    @Column(name = "updated_time", nullable = false)
+    private Timestamp updatedTime;
+
+    @PrePersist
+    protected void onCreate() {
+        this.createdTime = new Timestamp(System.currentTimeMillis());
+        this.updatedTime = new Timestamp(System.currentTimeMillis());
+    }
+
+    @PreUpdate
+    public void preUpdate() {
+        this.updatedTime = new Timestamp(System.currentTimeMillis());
+    }
 
     public InvoiceProductDTO toDTO() {
         return InvoiceProductDTO.builder()
@@ -50,7 +68,8 @@ public class InvoiceProduct {
                 .quantity(this.getQuantity())
                 .price(this.getPrice())
                 .amount(this.getAmount())
+                .createdTime(this.getCreatedTime())
+                .updatedTime(this.getUpdatedTime())
                 .build();
     }
 }
-
