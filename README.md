@@ -17,10 +17,10 @@ This project is a simple web application built using Spring Boot for managing cu
 - MySQL 8.0 or higher
 
 ### Business Flow Diagram
-![img_1.png](InvoiceManagement.jpg)
+![img_1.png](img/InvoiceManagement.jpg)
 
 ### Class Diagram
-![img.png](img.png)
+![img.png](img/img.png)
 
 ### Running the Application
 1. Create MySQL database named midtermg1, configure the username and password in the `application.properties`
@@ -47,8 +47,10 @@ Example data is available on [file](file)
 
 #
 ### API List
-#### Customer APIs
 
+
+#### Customer APIs
+![alt text](img/image-1.png)
 | Action               | Method | URL                                                       | Params/Body                      |
 |----------------------|--------|-----------------------------------------------------------|----------------------------------|
 | Get Customer List    | GET    | `http://localhost:8080/api/v1/customers`                  | `page`, `size`, `keyword` (optional) |
@@ -59,6 +61,7 @@ Example data is available on [file](file)
 | Deactivate Customer  | PUT    | `http://localhost:8080/api/v1/customers/deactivate/{id}`  | Replace `{id}` with customer ID  |
 #
 ### Invoice APIs
+![alt text](img/image-2.png)
 
 | Action                 | Method | URL                                                        | Params/Body                       |
 |------------------------|--------|------------------------------------------------------------|-----------------------------------|
@@ -73,7 +76,7 @@ Example data is available on [file](file)
 | Get Revenue Report     | GET    | `http://localhost:8080/api/v1/invoices/report`             | `year`, `month`, `day`            |
 #
 ### Product APIs
-
+![alt text](img/image.png)
 | Action               | Method | URL                                                       | Params/Body                      |
 |----------------------|--------|-----------------------------------------------------------|----------------------------------|
 | Get All Products     | GET    | `http://localhost:8080/api/v1/products`                   | `page`, `size`, `search`, `sortBy`, `sortDir` |
