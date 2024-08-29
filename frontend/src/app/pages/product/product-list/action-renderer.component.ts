@@ -11,10 +11,10 @@ import { ProductService } from '../../../services/product.service';
   standalone: true,
   imports: [MatButtonModule, MatIconButton, MatIconModule],
   template: `
-    <button mat-mini-fab color="blue" (click)="onEdit()" class="action-button pr-14">
-      <mat-icon>edit</mat-icon>
-    </button>
-  `,
+  <button (click)="onEdit()" class="w-11 h-11 bg-[#0C4CA3] hover:bg-[#2a5695] rounded-lg flex items-center justify-center mt-[2px] transition-all">
+    <mat-icon class="text-white">edit</mat-icon>
+  </button>
+`,
   styles: [`
     .action-button {
       margin-right: 8px;

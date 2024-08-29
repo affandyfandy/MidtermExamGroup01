@@ -1,7 +1,7 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-orange">
   <div class="container">
     <a class="navbar-brand" routerLink="/">POS Management</a>
-    <div class=" navbar-collapse">
+    <div class="navbar-collapse">
       <ul class="navbar-nav">
         <li class="nav-item">
           <a class="nav-link" routerLink="/product" routerLinkActive="active"
@@ -14,6 +14,11 @@
           <a class="nav-link" routerLink="/invoice" routerLinkActive="active">Invoice</a>
         </li>
       </ul>
+    </div>
+    <div class="ml-auto" *ngIf="isLoggedIn">
+      <button (click)="openLogoutDialog()" class="btn btn-outline-light">
+        Logout
+      </button>
     </div>
   </div>
 </nav>
