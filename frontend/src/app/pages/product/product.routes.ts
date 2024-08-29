@@ -1,10 +1,9 @@
-import { Routes } from '@angular/router';
-import { ProductListComponent } from './product-list/product-list.component';
-import { ProductAddComponent } from './product-add/product-add.component';
-import { ProductEditComponent } from './product-edit/product-edit.component';
+import { Routes } from "@angular/router";
+import { ProductComponent } from "./product-list/product.component";
+import { CustomerFormComponent } from "./product-form/product-form.component";
 
 export const productRoutes: Routes = [
-    { path: '', component: ProductListComponent },
-    { path: 'add', component: ProductAddComponent },
-    { path: 'edit/:id', component: ProductEditComponent }
+    { path: '', component: ProductComponent },
+    { path: ':id', component: CustomerFormComponent },
+    { path: 'create', component: CustomerFormComponent }
 ];

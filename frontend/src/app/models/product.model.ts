@@ -1,6 +1,14 @@
-export interface ProductDTO {
+export interface Product {
   id: number;
   name: string;
   price: number;
-  status: boolean;
+  status: 'ACTIVE' | 'INACTIVE';
+  createdTime: Date;
+  updatedTime: Date;
+}
+
+export interface AddProductReqeust {
+  name: string;
+  phoneNumber: string;
+  status: 'ACTIVE' | 'INACTIVE';
 }

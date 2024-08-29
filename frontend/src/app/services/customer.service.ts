@@ -1,36 +1,51 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Customer } from '../models/customer.model';
+import { AddCustomerReqeust, Customer } from '../models/customer.model';
 import { Observable } from 'rxjs';
+import { PaginatedResponse } from '../models/paginated-response.model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CustomerService {
 
-  private apiUrl = 'http://localhost:3000/customers';
+  private apiUrl = 'http://localhost:8080/api/v1/customers';
 
   constructor(private http: HttpClient) { }
 
-  getCustomers(): Observable<Customer[]> {
-    return this.http.get<Customer[]>(this.apiUrl);
+  getCustomers(page: number, size: number, keyword?: string): Observable<PaginatedResponse<Customer>> {
+    let params = new HttpParams()
+      .set('page', page)
+      .set('size', size)
+
+    if (keyword) {
+      params = params.set('keyword', keyword);
+    }
+
+    return this.http.get<PaginatedResponse<Customer>>(this.apiUrl, { params });
   }
 
-  addCustomers(product: Customer): Observable<Customer> {
-    return this.http.post<Customer>(this.apiUrl, product);
+  addCustomers(customer: AddCustomerReqeust): Observable<Customer> {
+    return this.http.post<Customer>(this.apiUrl, customer);
   }
 
-  updateCustomers(product: Customer): Observable<Customer> {
-    const url = `${this.apiUrl}/${product.id}`;
-    return this.http.put<Customer>(url, product);
+  updateCustomer(customer: Customer): Observable<Customer> {
+    const url = `${this.apiUrl}/${customer.id}`;
+    return this.http.put<Customer>(url, customer);
   }
 
-  getCustomerById(id: number): Observable<Customer> {
+  getCustomerById(id: string): Observable<Customer> {
     const url = `${this.apiUrl}/${id}`;
     return this.http.get<Customer>(url);
   }
 
-  deleteCustomer(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/${id}`);
+  activateCustomer(id: string): Observable<Customer> {
+    const url = `${this.apiUrl}/activate/${id}`;
+    return this.http.put<Customer>(url, {});
+  }
+
+  deactivateCustomer(id: string): Observable<Customer> {
+    const url = `${this.apiUrl}/deactivate/${id}`;
+    return this.http.put<Customer>(url, {});
   }
 }

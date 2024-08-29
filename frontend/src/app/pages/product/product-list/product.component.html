@@ -1,0 +1,18 @@
+<div class="p-12">
+    <div class="flex justify-between align-middle">
+        <input type="search" [(ngModel)]="searchText" (input)="getProducts()" placeholder="Search here..."
+            class="md:w-[500px] sm:w-[200px] bg-[#E7E7E7] rounded-md px-2" />
+
+        <button (click)="addProduct()"
+            class="bg-green-500 text-white px-3 py-2 rounded-md hover:bg-green-600 transition-all h-fit">
+            + Add New
+        </button>
+    </div>
+
+    <div class="product-grid mt-4">
+        <ag-grid-angular style="width: 100%;" class="ag-theme-alpine" [rowData]="products" [columnDefs]="columnDefs"
+            [defaultColDef]="defaultColDef" (gridReady)="onGridReady($event)" [rowHeight]="rowHeight"
+            [pagination]="true" [paginationPageSize]="10">
+        </ag-grid-angular>
+    </div>
+</div>

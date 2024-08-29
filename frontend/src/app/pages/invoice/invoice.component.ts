@@ -6,7 +6,6 @@ import { SearchBarInvoiceComponent } from '../../main/components/search-bar-invo
   standalone: true,
   imports: [SearchBarInvoiceComponent],
   templateUrl: './invoice.component.html',
-  styleUrl: './invoice.component.css'
 })
 export class InvoiceComponent {
 

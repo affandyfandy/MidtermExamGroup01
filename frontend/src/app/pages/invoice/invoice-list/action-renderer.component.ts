@@ -3,16 +3,17 @@ import { MatButtonModule, MatIconButton } from '@angular/material/button';
 import { ICellRendererAngularComp } from 'ag-grid-angular';
 import { ICellRendererParams } from 'ag-grid-community';
 import { MatIconModule } from '@angular/material/icon';
-import { Router } from '@angular/router';
-import { CustomerService } from '../../../services/customer.service';
 
 @Component({
   selector: 'app-action-renderer',
   standalone: true,
   imports: [MatButtonModule, MatIconButton, MatIconModule],
   template: `
-    <button mat-mini-fab color="blue" (click)="onEdit()" class="action-button pr-14">
+    <button mat-mini-fab color="blue" (click)="onEdit()" class="action-button">
       <mat-icon>edit</mat-icon>
+    </button>
+    <button mat-mini-fab color="secondary" (click)="onDelete()" class="action-button">
+      <mat-icon>delete</mat-icon>
     </button>
   `,
   styles: [`
@@ -31,8 +32,6 @@ export class ActionRendererComponent implements ICellRendererAngularComp {
 
   private params!: ICellRendererParams;
 
-  constructor(private router: Router, private customerService: CustomerService) { }
-
   agInit(params: ICellRendererParams): void {
     this.params = params;
   }
@@ -42,7 +41,12 @@ export class ActionRendererComponent implements ICellRendererAngularComp {
   }
 
   onEdit(): void {
-    const customerId = this.params.data.id;
-    this.router.navigate([`/customer/${customerId}`]);
+    console.log('Edit clicked for ID:', this.params.data.id);
+    // Emit event or implement logic to handle edit
+  }
+
+  onDelete(): void {
+    console.log('Delete clicked for ID:', this.params.data.id);
+    // Emit event or implement logic to handle delete
   }
 }

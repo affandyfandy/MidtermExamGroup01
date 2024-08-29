@@ -4,7 +4,7 @@ import { ICellRendererAngularComp } from 'ag-grid-angular';
 import { ICellRendererParams } from 'ag-grid-community';
 import { MatIconModule } from '@angular/material/icon';
 import { Router } from '@angular/router';
-import { CustomerService } from '../../../services/customer.service';
+import { ProductService } from '../../../services/product.service';
 
 @Component({
   selector: 'app-action-renderer',
@@ -19,7 +19,7 @@ import { CustomerService } from '../../../services/customer.service';
     .action-button {
       margin-right: 8px;
     }
-  
+
     .action-button:last-child {
       margin-right: 0;
     }
@@ -31,7 +31,7 @@ export class ActionRendererComponent implements ICellRendererAngularComp {
 
   private params!: ICellRendererParams;
 
-  constructor(private router: Router, private customerService: CustomerService) { }
+  constructor(private router: Router, private productService: ProductService) { }
 
   agInit(params: ICellRendererParams): void {
     this.params = params;
@@ -42,7 +42,7 @@ export class ActionRendererComponent implements ICellRendererAngularComp {
   }
 
   onEdit(): void {
-    const customerId = this.params.data.id;
-    this.router.navigate([`/customer/${customerId}`]);
+    const productId = this.params.data.id;
+    this.router.navigate([`/product/${productId}`]);
   }
 }
