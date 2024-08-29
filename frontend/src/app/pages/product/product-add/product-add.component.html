@@ -1,0 +1,18 @@
+<div>
+  <h2>Add New Product</h2>
+  <form (ngSubmit)="onSaveProduct()">
+    <label for="name">Name:</label>
+    <input id="name" [(ngModel)]="product.name" name="name" required />
+
+    <label for="price">Price:</label>
+    <input id="price" type="number" [(ngModel)]="product.price" name="price" required />
+
+    <label for="status">Status:</label>
+    <select id="status" [(ngModel)]="product.status" name="status">
+      <option [value]="true">Active</option>
+      <option [value]="false">Inactive</option>
+    </select>
+
+    <button type="submit">Save</button>
+  </form>
+</div>
