@@ -44,16 +44,16 @@ export class InvoiceService {
     let params = new HttpParams()
       .set('page', page.toString())
       .set('size', size.toString());
-
+  
     if (customerId) params = params.set('customerId', customerId);
     if (customerName) params = params.set('customerName', customerName);
-    if (year) params = params.set('year', year.toString());
-    if (month) params = params.set('month', month.toString());
+    if (year !== undefined) params = params.set('year', year.toString());
+    if (month !== undefined) params = params.set('month', month.toString());
     if (invoiceAmountCondition) params = params.set('invoiceAmountCondition', invoiceAmountCondition);
-    if (invoiceAmount) params = params.set('invoiceAmount', invoiceAmount.toString());
-
+    if (invoiceAmount !== undefined) params = params.set('invoiceAmount', invoiceAmount.toString());
+  
     return this.http.get<Invoice[]>(`${this.apiUrl}/search`, { params });
-  }
+  }  
 
   exportToPDF(): Observable<Blob> {
     return this.http.get(`${this.apiUrl}/export-pdf`, { responseType: 'blob' });
