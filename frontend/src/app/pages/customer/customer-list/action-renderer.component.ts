@@ -14,9 +14,6 @@ import { CustomerService } from '../../../services/customer.service';
     <button mat-mini-fab color="blue" (click)="onEdit()" class="action-button pr-14">
       <mat-icon>edit</mat-icon>
     </button>
-    <button mat-mini-fab color="secondary" (click)="onDelete()" class="action-button">
-      <mat-icon>delete</mat-icon>
-    </button>
   `,
   styles: [`
     .action-button {
@@ -47,14 +44,5 @@ export class ActionRendererComponent implements ICellRendererAngularComp {
   onEdit(): void {
     const customerId = this.params.data.id;
     this.router.navigate([`/customer/${customerId}`]);
-  }
-
-  onDelete(): void {
-    const customerId = this.params.data.id;
-    if (confirm('Are you sure you want to delete this customer?')) {
-      this.customerService.deleteCustomer(customerId).subscribe(() => {
-
-      });
-    }
   }
 }

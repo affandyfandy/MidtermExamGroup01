@@ -18,11 +18,13 @@ import { CustomerService } from '../../../services/customer.service';
 })
 export class StatusRendererComponent implements ICellRendererAngularComp {
     public status!: 'ACTIVE' | 'INACTIVE';
+    private customerId: string = '';
 
     constructor(private customerService: CustomerService) { }
 
     agInit(params: ICellRendererParams): void {
         this.status = params.value;
+        this.customerId = params.data.id;
     }
 
     refresh(params: ICellRendererParams): boolean {
@@ -31,6 +33,22 @@ export class StatusRendererComponent implements ICellRendererAngularComp {
     }
 
     onStatusChange(event: MatSlideToggleChange): void {
-        this.status = event.checked ? 'ACTIVE' : 'INACTIVE';
+        if (this.status == 'ACTIVE') {
+            this.customerService.deactivateCustomer(this.customerId)
+                .subscribe({
+                    next: (response) => {
+                        this.status = response.status;
+                    },
+                    error: (err) => console.error('Error updating status', err)
+                });
+        } else {
+            this.customerService.activateCustomer(this.customerId)
+                .subscribe({
+                    next: (response) => {
+                        this.status = response.status;
+                    },
+                    error: (err) => console.error('Error updating status', err)
+                });
+        }
     }
 }

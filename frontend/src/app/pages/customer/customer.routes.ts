@@ -4,5 +4,6 @@ import { CustomerFormComponent } from "./customer-form/customer-form.component";
 
 export const customerRoutes: Routes = [
     { path: '', component: CustomerComponent },
-    { path: ':id', component: CustomerFormComponent }
+    { path: ':id', component: CustomerFormComponent },
+    { path: 'create', component: CustomerFormComponent }
 ];
