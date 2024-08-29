@@ -1,35 +1,39 @@
-import { Component } from '@angular/core';
-import { AddCustomerReqeust, Customer } from '../../../models/customer.model';
+import { Component, OnInit } from '@angular/core';
+import { Product } from '../../../models/product.model';
 import { ActivatedRoute, Router } from '@angular/router';
-import { CustomerService } from '../../../services/customer.service';
+import { ProductService } from '../../../services/product.service';
 import { CommonModule } from '@angular/common';
-import { MatFormFieldModule, MatLabel } from '@angular/material/form-field';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { FormsModule } from '@angular/forms';
-import { MatSnackBar, MatSnackBarConfig, MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
 @Component({
-  selector: 'app-customer-form',
+  selector: 'app-product-form',
   standalone: true,
   imports: [
     CommonModule,
     MatFormFieldModule,
     FormsModule,
-    MatLabel,
     MatSnackBarModule
   ],
   templateUrl: './product-form.component.html',
-  styleUrl: './product-form.component.css'
+  styleUrls: ['./product-form.component.css']
 })
-export class CustomerFormComponent {
-  customer: Customer = {
-    id: "", name: '', phoneNumber: '', status: 'ACTIVE', createdTime: new Date(), updatedTime: new Date()
+export class ProductFormComponent implements OnInit {
+  product: Product = {
+    id: 0,
+    name: '',
+    price: 0,
+    status: 'ACTIVE',
+    createdTime: new Date(),
+    updatedTime: new Date()
   };
 
   isEditMode: boolean = false;
 
   constructor(
     private route: ActivatedRoute,
-    private customerService: CustomerService,
+    private productService: ProductService,
     private router: Router,
     private snackBar: MatSnackBar
   ) { }
@@ -38,30 +42,27 @@ export class CustomerFormComponent {
     const id = this.route.snapshot.paramMap.get('id');
     if (id !== null && id !== 'create') {
       this.isEditMode = true;
-      this.customerService.getCustomerById(id).subscribe(data => {
-        this.customer = data;
+      this.productService.getProductById(+id).subscribe(data => {
+        this.product = data;
       });
     }
   }
 
   onSubmit() {
-    if (this.customer.name && this.customer.phoneNumber) {
+    if (this.product.name && this.product.price) {
       if (this.isEditMode) {
-        this.customerService.updateCustomer(this.customer).subscribe(() => {
-          this.showSnackbar('Customer updated successfully')
+        this.productService.updateProduct(+this.product.id, this.product).subscribe(() => {
+          this.showSnackbar('Product updated successfully');
+          this.router.navigate(['/product']);
         }, error => {
-          this.showSnackbar("Failed to update customer")
+          this.showSnackbar("Failed to update product");
         });
       } else {
-        let request: AddCustomerReqeust = {
-          name: this.customer.name,
-          phoneNumber: this.customer.phoneNumber,
-          status: this.customer.status
-        }
-        this.customerService.addCustomers(request).subscribe(() => {
-          this.showSnackbar('Customer created successfully')
+        this.productService.addProduct(this.product).subscribe(() => {
+          this.showSnackbar('Product created successfully');
+          this.router.navigate(['/product']);
         }, error => {
-          this.showSnackbar("Failed to create customer")
+          this.showSnackbar("Failed to create product");
         });
       }
     }
@@ -70,11 +71,10 @@ export class CustomerFormComponent {
   showSnackbar(message: string) {
     this.snackBar.open(message, 'Close', {
       duration: 3000,
-
     });
   }
 
   onCancel() {
-    this.router.navigate([`/customer`]);
+    this.router.navigate([`/product`]);
   }
 }

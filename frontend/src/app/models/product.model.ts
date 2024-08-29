@@ -9,6 +9,6 @@ export interface Product {
 
 export interface AddProductReqeust {
   name: string;
-  phoneNumber: string;
+  price: number;
   status: 'ACTIVE' | 'INACTIVE';
 }
