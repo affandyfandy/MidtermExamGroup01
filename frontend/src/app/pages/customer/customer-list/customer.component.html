@@ -1,9 +1,19 @@
-<div class="">
+<div class="p-12">
+    <div class="flex justify-between align-middle">
+        <mat-form-field appearance="fill" class="md:w-[500px] sm:w-[200px]">
+            <mat-label>Search</mat-label>
+            <input matInput [(ngModel)]="searchText" placeholder="Search here..." />
+        </mat-form-field>
 
-    <div class="customer-grid">
-        <ag-grid-angular style="width: 100%;" class="ag-theme-alpine" [rowData]="customers$ | async"
-            [columnDefs]="columnDefs" [defaultColDef]="defaultColDef" (gridReady)="onGridReady($event)"
-            [rowHeight]="rowHeight">
+        <button class="bg-green-500 text-white px-3 py-2 rounded-md hover:bg-green-600 transition-all h-fit">
+            + Add New
+        </button>
+    </div>
+
+    <div class="customer-grid ">
+        <ag-grid-angular style="width: 100%;" class="ag-theme-alpine" [rowData]="customers" [columnDefs]="columnDefs"
+            [defaultColDef]="defaultColDef" (gridReady)="onGridReady($event)" [rowHeight]="rowHeight"
+            [pagination]="true" [paginationPageSize]="10">
         </ag-grid-angular>
     </div>
 </div>

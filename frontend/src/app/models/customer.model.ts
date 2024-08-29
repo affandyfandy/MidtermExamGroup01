@@ -1,8 +1,8 @@
 export interface Customer {
-  id: number;
+  id: string;
   name: string;
-  phone_number: string;
+  phoneNumber: string;
   status: 'ACTIVE' | 'INACTIVE';
-  created_time: Date;
-  updated_time: Date;
+  createdTime: Date;
+  updatedTime: Date;
 }

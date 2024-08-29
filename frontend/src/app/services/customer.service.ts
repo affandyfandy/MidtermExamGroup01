@@ -1,19 +1,20 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Customer } from '../models/customer.model';
 import { Observable } from 'rxjs';
+import { PaginatedResponse } from '../models/paginated-response.model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CustomerService {
 
-  private apiUrl = 'http://localhost:3000/customers';
+  private apiUrl = 'http://localhost:8080/api/v1/customers';
 
   constructor(private http: HttpClient) { }
 
-  getCustomers(): Observable<Customer[]> {
-    return this.http.get<Customer[]>(this.apiUrl);
+  getCustomers(): Observable<PaginatedResponse<Customer>> {
+    return this.http.get<PaginatedResponse<Customer>>(this.apiUrl);
   }
 
   addCustomers(product: Customer): Observable<Customer> {

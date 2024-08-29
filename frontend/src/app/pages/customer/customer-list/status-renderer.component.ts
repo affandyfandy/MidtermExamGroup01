@@ -3,6 +3,7 @@ import { MatCommonModule } from '@angular/material/core';
 import { MatSlideToggleChange, MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { ICellRendererAngularComp } from 'ag-grid-angular';
 import { ICellRendererParams } from 'ag-grid-community';
+import { CustomerService } from '../../../services/customer.service';
 
 @Component({
     selector: 'app-status-renderer',
@@ -18,6 +19,8 @@ import { ICellRendererParams } from 'ag-grid-community';
 export class StatusRendererComponent implements ICellRendererAngularComp {
     public status!: 'ACTIVE' | 'INACTIVE';
 
+    constructor(private customerService: CustomerService) { }
+
     agInit(params: ICellRendererParams): void {
         this.status = params.value;
     }
@@ -29,7 +32,5 @@ export class StatusRendererComponent implements ICellRendererAngularComp {
 
     onStatusChange(event: MatSlideToggleChange): void {
         this.status = event.checked ? 'ACTIVE' : 'INACTIVE';
-        console.log(`Status changed to: ${this.status}`);
-        // Implement logic to update status in the backend if needed
     }
 }
