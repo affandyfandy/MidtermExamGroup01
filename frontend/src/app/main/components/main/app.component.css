@@ -1,0 +1,10 @@
+.app-container {
+    display: flex;
+    flex-direction: column;
+    background-color: #FFFFFF;
+    min-height: 100vh;
+}
+  
+app-footer {
+    margin-top: auto;
+}

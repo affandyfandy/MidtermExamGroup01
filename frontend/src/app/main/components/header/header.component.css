@@ -1,0 +1,26 @@
+:host {
+  display: block;
+}
+
+.navbar {
+  font-family: Helvetica, Arial, sans-serif;
+}
+
+.navbar-brand {
+  color: #fff;
+  font-weight: bold;
+}
+
+.bg-orange {
+  background-color: #F37022 !important;
+}
+
+.nav-link {
+  color: #fff;
+  text-decoration: none;
+}
+
+.nav-link.active {
+  color: #fff;
+  border-bottom: 2px solid #fff;
+}
