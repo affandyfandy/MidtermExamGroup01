@@ -11,6 +11,9 @@ import { InvoiceService } from '../../../services/invoice.service';
   standalone: true,
   imports: [MatButtonModule, MatIconModule],
   template: `
+    <button mat-mini-fab color="primary" (click)="onEdit()" class="action-button">
+      <mat-icon>edit</mat-icon>
+    </button>
     <button mat-mini-fab color="primary" (click)="onView()" class="action-button">
       <mat-icon>visibility</mat-icon>
     </button>
@@ -35,6 +38,11 @@ export class InvoiceActionRendererComponent implements ICellRendererAngularComp 
 
   refresh(params: ICellRendererParams): boolean {
     return true;
+  }
+
+  onEdit(): void {
+    const invoiceId = this.params.data.id;
+    this.router.navigate([`/invoice/edit/${invoiceId}`]);
   }
 
   onView(): void {

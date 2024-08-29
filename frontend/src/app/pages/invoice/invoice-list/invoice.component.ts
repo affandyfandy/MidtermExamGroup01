@@ -76,6 +76,17 @@ export class InvoiceComponent {
     );
   }
 
+  exportToPDF() {
+    this.invoiceService.exportToPDF().subscribe({
+      next: () => {
+        console.log('PDF export initiated');
+      },
+      error: (error) => {
+        console.error('Error exporting to PDF', error);
+      }
+    });
+  }
+
   navigateToAddInvoice() {
     this.router.navigate(['/invoice/add']);
   }  
