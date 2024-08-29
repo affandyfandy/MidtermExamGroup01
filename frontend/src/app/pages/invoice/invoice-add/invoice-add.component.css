@@ -1,0 +1,78 @@
+.invoice-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #f5f5f5;
+  }
+  
+  form {
+    width: 100%;
+    max-width: 600px;
+    padding: 20px;
+    background-color: #fff;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+  }
+  
+  .invoice-title {
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 24px;
+    color: #333;
+  }
+  
+  .full-width {
+    width: 100%;
+  }
+  
+  .product-entry {
+    display: flex;
+    align-items: center;
+    margin-bottom: 16px;
+  }
+  
+  .product-dropdown,
+  .quantity-field {
+    flex: 1;
+    margin-right: 8px;
+  }
+  
+  .price-field {
+    display: flex;
+    align-items: center;
+    flex: 1;
+    margin-right: 8px;
+  }
+  
+  .price-field label {
+    display: block;
+    margin-bottom: 4px;
+  }
+  
+  .product-entry button {
+    margin-left: 8px;
+  }
+  
+  button.mat-raised-button {
+    margin-top: 20px;
+  }
+  
+  .total-container {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+    font-size: 18px;
+    font-weight: bold;
+  }
+  
+  .action-buttons {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 20px;
+  }
+  
+  .action-buttons button {
+    margin-left: 8px;
+  }
+  

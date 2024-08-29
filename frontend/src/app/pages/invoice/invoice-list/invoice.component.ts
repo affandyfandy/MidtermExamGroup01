@@ -10,6 +10,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { ICellRendererParams } from 'ag-grid-community';
 import { SearchBarInvoiceComponent } from '../../../main/components/search-bar-invoice/search-bar-invoice.component';
 import { switchMap } from 'rxjs/operators';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-invoice',
@@ -58,7 +59,7 @@ export class InvoiceComponent {
     filter: true,
   };
 
-  constructor(private invoiceService: InvoiceService) {
+  constructor(private invoiceService: InvoiceService, private router: Router) {
     this.invoice$ = this.searchParamsSubject.asObservable().pipe(
       switchMap(params => {
         const startDateYear = params.startDate?.year;
@@ -79,6 +80,10 @@ export class InvoiceComponent {
       })
     );
   }
+
+  navigateToAddInvoice() {
+    this.router.navigate(['/invoice/add']);
+  }  
 
   private gridApi: any;
 
