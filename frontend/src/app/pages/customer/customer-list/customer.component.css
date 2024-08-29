@@ -1,0 +1,13 @@
+.customer-grid {
+    width: 100%;
+    margin: 20px auto;
+}
+
+.ag-theme-alpine {
+    height: 500px;
+    width: 100%;
+}
+
+.mat-slide-toggle {
+    display: inline-block;
+}

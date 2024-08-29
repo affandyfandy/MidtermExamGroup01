@@ -1,10 +1,8 @@
-import { Status } from './status';
-
 export interface Customer {
-  id: string;
+  id: number;
   name: string;
-  phoneNumber: string;
-  status: Status;
-  createdTime: Date;
-  updatedTime: Date;
+  phone_number: string;
+  status: 'ACTIVE' | 'INACTIVE';
+  created_time: Date;
+  updated_time: Date;
 }

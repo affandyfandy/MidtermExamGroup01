@@ -1,0 +1,9 @@
+<div class="">
+
+    <div class="customer-grid">
+        <ag-grid-angular style="width: 100%;" class="ag-theme-alpine" [rowData]="customers$ | async"
+            [columnDefs]="columnDefs" [defaultColDef]="defaultColDef" (gridReady)="onGridReady($event)"
+            [rowHeight]="rowHeight">
+        </ag-grid-angular>
+    </div>
+</div>
