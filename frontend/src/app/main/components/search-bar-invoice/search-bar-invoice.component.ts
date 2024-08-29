@@ -1,6 +1,6 @@
 import { Component, Output, EventEmitter } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { MatDatepickerModule } from '@angular/material/datepicker';
+// import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
@@ -10,7 +10,7 @@ import { MatDateRangePicker, MatDateRangeInput } from '@angular/material/datepic
 @Component({
   selector: 'app-search-invoice',
   standalone: true,
-  imports: [FormsModule, MatDatepickerModule, MatFormFieldModule, MatInputModule, MatIconModule, MatButtonModule],
+  imports: [FormsModule, MatFormFieldModule, MatInputModule, MatIconModule, MatButtonModule],
   templateUrl: './search-bar-invoice.component.html',
   styleUrls: ['./search-bar-invoice.component.css']
 })
