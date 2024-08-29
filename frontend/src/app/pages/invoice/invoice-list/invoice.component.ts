@@ -10,6 +10,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { ICellRendererParams } from 'ag-grid-community';
 import { SearchBarInvoiceComponent } from '../../../main/components/search-bar-invoice/search-bar-invoice.component';
 import { switchMap } from 'rxjs/operators';
+import { ActionRendererComponent } from './action-renderer.component';
 
 @Component({
   selector: 'app-invoice',
@@ -40,7 +41,7 @@ export class InvoiceComponent {
     {
       field: 'actions',
       headerName: 'Actions',
-      cellRenderer: 'actionsCellRenderer',
+      cellRenderer: ActionRendererComponent,
       cellRendererParams: {
         onEdit: this.editInvoice.bind(this),
         onDelete: this.deleteInvoice.bind(this),
@@ -49,8 +50,8 @@ export class InvoiceComponent {
       filter: false,
     }
   ];
-  
-  
+
+
 
   public defaultColDef: ColDef = {
     resizable: true,
@@ -65,7 +66,7 @@ export class InvoiceComponent {
         const startDateMonth = params.startDate?.month;
         const endDateYear = params.endDate?.year;
         const endDateMonth = params.endDate?.month;
-        
+
         return this.invoiceService.getInvoicesByCriteria(
           params.customerId,
           params.customerName,

@@ -1,5 +1,16 @@
 <div class="invoice-container">
-    <app-search-invoice (search)="onSearch($event)"></app-search-invoice>
+  <div class="flex justify-between align-middle">
+    <div class="w-full">
+
+    </div>
+    <button
+        class="bg-green-500 text-white px-3 py-2 rounded-md hover:bg-green-600 transition-all h-fit w-[150px]">
+        + Add New
+    </button>
+</div>
+<app-search-invoice (search)="onSearch($event)"></app-search-invoice>
+
+
     <div class="invoice-grid">
         <ag-grid-angular
             style="width: 100%;"

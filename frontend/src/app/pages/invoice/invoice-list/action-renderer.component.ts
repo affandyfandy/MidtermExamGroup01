@@ -9,18 +9,15 @@ import { MatIconModule } from '@angular/material/icon';
   standalone: true,
   imports: [MatButtonModule, MatIconButton, MatIconModule],
   template: `
-    <button mat-mini-fab color="blue" (click)="onEdit()" class="action-button">
-      <mat-icon>edit</mat-icon>
-    </button>
-    <button mat-mini-fab color="secondary" (click)="onDelete()" class="action-button">
-      <mat-icon>delete</mat-icon>
-    </button>
-  `,
+  <button (click)="onEdit()" class="w-11 h-11 bg-[#0C4CA3] hover:bg-[#2a5695] rounded-lg flex items-center justify-center mt-[2px] transition-all">
+    <mat-icon class="text-white">edit</mat-icon>
+  </button>
+`,
   styles: [`
     .action-button {
       margin-right: 8px;
     }
-  
+
     .action-button:last-child {
       margin-right: 0;
     }
