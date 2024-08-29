@@ -4,7 +4,7 @@
             class="md:w-[500px] sm:w-[200px] bg-[#E7E7E7] rounded-md px-2" />
 
         <div class="flex">
-            <input type="file" id="fileInput" (change)="importFile()" class="hidden" accept=".xls,.xlsx">
+            <input type="file" id="fileInput" (change)="importFile($event)" class="hidden" accept=".xls,.xlsx">
             <label for="fileInput"
                 class="cursor-pointer bg-green-100 text-green-500 px-3 py-2 rounded-md hover:bg-green-200 transition-all h-fit inline-block mr-2">
                 <div class="flex">

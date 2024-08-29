@@ -13,6 +13,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { Router } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-product',
@@ -25,7 +26,8 @@ import { MatIconModule } from '@angular/material/icon';
     FormsModule,
     MatFormFieldModule,
     MatInputModule,
-    MatIconModule
+    MatIconModule,
+    MatSnackBarModule
   ],
   templateUrl: './product.component.html',
   styleUrls: ['./product.component.css']
@@ -64,7 +66,8 @@ export class ProductComponent {
 
   constructor(
     private productService: ProductService,
-    private router: Router
+    private router: Router,
+    private snackBar: MatSnackBar
   ) {
     this.getProducts();
   }
@@ -83,8 +86,27 @@ export class ProductComponent {
     this.router.navigate([`/product/create`]);
   }
 
-  public importFile() {
-    // TODO: IMPLEMENT LOGIC
+  importFile(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files.length > 0) {
+      const file = input.files[0];
+
+      this.productService.importProducts(file).subscribe(
+        (response) => {
+          this.snackBar.open('Import successful!', 'Close', {
+            duration: 3000,
+            verticalPosition: 'top',
+          });
+          this.getProducts();
+        },
+        (error) => {
+          this.snackBar.open('Import failed. Please try again.', 'Close', {
+            duration: 3000,
+            verticalPosition: 'top',
+          });
+        }
+      );
+    }
   }
 
   private gridApi: any;
