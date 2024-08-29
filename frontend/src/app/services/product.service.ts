@@ -19,7 +19,7 @@ export class ProductService {
       .set('sortDir', sortDir);
 
     if (search) {
-      params = params.set('search', search);
+      params = params.set('search', 'name:' + search);
     }
 
     return this.http.get<any>(this.apiUrl, { params });

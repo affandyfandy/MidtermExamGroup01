@@ -49,6 +49,7 @@ export class CustomerFormComponent {
       if (this.isEditMode) {
         this.customerService.updateCustomer(this.customer).subscribe(() => {
           this.showSnackbar('Customer updated successfully')
+          this.router.navigate([`/customer`]);
         }, error => {
           this.showSnackbar("Failed to update customer")
         });
@@ -60,6 +61,7 @@ export class CustomerFormComponent {
         }
         this.customerService.addCustomers(request).subscribe(() => {
           this.showSnackbar('Customer created successfully')
+          this.router.navigate([`/customer`]);
         }, error => {
           this.showSnackbar("Failed to create customer")
         });

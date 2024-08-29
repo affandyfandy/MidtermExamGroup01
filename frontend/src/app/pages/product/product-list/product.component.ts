@@ -12,6 +12,7 @@ import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { Router } from '@angular/router';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-product',
@@ -23,7 +24,8 @@ import { Router } from '@angular/router';
     ActionRendererComponent,
     FormsModule,
     MatFormFieldModule,
-    MatInputModule
+    MatInputModule,
+    MatIconModule
   ],
   templateUrl: './product.component.html',
   styleUrls: ['./product.component.css']
@@ -79,6 +81,10 @@ export class ProductComponent {
 
   public addProduct() {
     this.router.navigate([`/product/create`]);
+  }
+
+  public importFile() {
+    // TODO: IMPLEMENT LOGIC
   }
 
   private gridApi: any;
