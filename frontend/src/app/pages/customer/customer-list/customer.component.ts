@@ -18,7 +18,6 @@ import { Router } from '@angular/router';
   standalone: true,
   imports: [
     CommonModule,
-    HttpClientModule,
     AgGridModule,
     StatusRendererComponent,
     ActionRendererComponent,
@@ -34,6 +33,9 @@ export class CustomerComponent {
   public customers: Customer[] = [];
   public rowHeight = 52;
   public searchText = '';
+  totalElements = 0;
+  currentPage = 0;
+  pageSize = 20;
 
   public columnDefs: ColDef[] = [
     { field: 'id', headerName: 'ID', sortable: true, filter: true, headerClass: 'text-center', flex: 1, },
@@ -66,19 +68,16 @@ export class CustomerComponent {
   }
 
   public getCustomers() {
-    this.customerService.getCustomers(this.searchText).subscribe((response) => {
-      this.customers = response.content ?? [];
-    });
+    this.customerService.getCustomers(
+      this.currentPage,
+      this.pageSize,
+      this.searchText).subscribe((response) => {
+        this.customers = response.content ?? [];
+      });
   }
 
   public addCustomer() {
     this.router.navigate([`/customer/create`]);
-  }
-
-  getRowDataByIndex(index: number): Customer {
-    let rowData: Customer[] = [];
-    this.gridApi.forEachNode((node: { data: Customer; }) => rowData.push(node.data));
-    return rowData[index];
   }
 
   private gridApi: any;

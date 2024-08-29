@@ -5,7 +5,7 @@ import { CustomerService } from '../../../services/customer.service';
 import { CommonModule } from '@angular/common';
 import { MatFormFieldModule, MatLabel } from '@angular/material/form-field';
 import { FormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
+import { MatSnackBar, MatSnackBarConfig, MatSnackBarModule } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-customer-form',
@@ -15,6 +15,7 @@ import { HttpClientModule } from '@angular/common/http';
     MatFormFieldModule,
     FormsModule,
     MatLabel,
+    MatSnackBarModule
   ],
   templateUrl: './customer-form.component.html',
   styleUrl: './customer-form.component.css'
@@ -29,7 +30,8 @@ export class CustomerFormComponent {
   constructor(
     private route: ActivatedRoute,
     private customerService: CustomerService,
-    private router: Router
+    private router: Router,
+    private snackBar: MatSnackBar
   ) { }
 
   ngOnInit(): void {
@@ -45,16 +47,31 @@ export class CustomerFormComponent {
   onSubmit() {
     if (this.customer.name && this.customer.phoneNumber) {
       if (this.isEditMode) {
-        this.customerService.updateCustomer(this.customer).subscribe(() => { });
+        this.customerService.updateCustomer(this.customer).subscribe(() => {
+          this.showSnackbar('Customer updated successfully')
+        }, error => {
+          this.showSnackbar("Failed to update customer")
+        });
       } else {
         let request: AddCustomerReqeust = {
           name: this.customer.name,
           phoneNumber: this.customer.phoneNumber,
           status: this.customer.status
         }
-        this.customerService.addCustomers(request).subscribe(() => { });
+        this.customerService.addCustomers(request).subscribe(() => {
+          this.showSnackbar('Customer created successfully')
+        }, error => {
+          this.showSnackbar("Failed to create customer")
+        });
       }
     }
+  }
+
+  showSnackbar(message: string) {
+    this.snackBar.open(message, 'Close', {
+      duration: 3000,
+
+    });
   }
 
   onCancel() {
