@@ -26,7 +26,7 @@ import { Router } from '@angular/router';
     MatInputModule
   ],
   templateUrl: './customer.component.html',
-  styleUrl: './customer.component.css'
+  styleUrls: ['./customer.component.css']
 })
 export class CustomerComponent {
 
@@ -38,9 +38,11 @@ export class CustomerComponent {
   pageSize = 20;
 
   public columnDefs: ColDef[] = [
-    { field: 'id', headerName: 'ID', sortable: true, filter: true, headerClass: 'text-center', flex: 1, },
+    { field: 'id', headerName: 'ID', sortable: true, filter: true, headerClass: 'text-center', flex: 1 },
     { field: 'name', headerName: 'Name', sortable: true, filter: true, headerClass: 'text-center', flex: 2 },
     { field: 'phoneNumber', headerName: 'Phone Number', sortable: true, filter: true, headerClass: 'text-center', flex: 2 },
+    { field: 'createdTime', headerName: 'Created Time', sortable: true, filter: true, valueFormatter: this.dateFormatter, headerClass: 'text-center', flex: 2 },
+    { field: 'updatedTime', headerName: 'Updated Time', sortable: true, filter: true, valueFormatter: this.dateFormatter, headerClass: 'text-center', flex: 2 },
     {
       field: 'status',
       headerName: 'Status',
@@ -73,6 +75,7 @@ export class CustomerComponent {
       this.pageSize,
       this.searchText).subscribe((response) => {
         this.customers = response.content ?? [];
+        this.totalElements = response.totalElements ?? 0;
       });
   }
 
@@ -84,5 +87,10 @@ export class CustomerComponent {
 
   onGridReady(params: any) {
     this.gridApi = params.api;
+  }
+
+  dateFormatter(params: any) {
+    const date = new Date(params.value);
+    return date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
   }
 }

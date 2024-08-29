@@ -26,7 +26,7 @@ export class ProductFormComponent implements OnInit {
     price: 0,
     status: 'ACTIVE',
     createdTime: new Date(),
-    updatedTime: new Date()
+    updatedTime: new Date(),
   };
 
   isEditMode: boolean = false;

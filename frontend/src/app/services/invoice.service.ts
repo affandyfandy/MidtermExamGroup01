@@ -17,15 +17,18 @@ export class InvoiceService {
     return this.http.get<Invoice>(`${this.apiUrl}/${id}`);
   }
 
-  getAllInvoiceProducts(): Observable<InvoiceProductDTO[]> {
-    return this.http.get<InvoiceProductDTO[]>(`${this.apiUrl}/products`);
+  getAllInvoices(page: number = 0, size: number = 10): Observable<Invoice[]> {
+    const params = new HttpParams()
+      .set('page', page.toString())
+      .set('size', size.toString());
+    return this.http.get<Invoice[]>(this.apiUrl, { params });
   }
 
-  addInvoice(invoice: Invoice): Observable<Invoice> {
-    return this.http.post<Invoice>(this.apiUrl, invoice);
+  addInvoice(invoice: { customer: { id: string }; invoiceProducts: { product: { id: number }; quantity: number }[] }): Observable<any> {
+    return this.http.post<any>(this.apiUrl, invoice);
   }
 
-  editInvoice(id: string, invoice: Invoice): Observable<Invoice> {
+  editInvoice(id: string, invoice: { customer: { id: string }; invoiceProducts: { product: { id: number }; quantity: number }[] }): Observable<any> {
     return this.http.put<Invoice>(`${this.apiUrl}/${id}`, invoice);
   }
 

@@ -1,13 +1,11 @@
-.invoice-container{
+.invoice-container {
     padding: 30px;
 }
 
 .invoice-grid {
-    padding: 55px;
+    padding: 10px;
     width: 100%;
     margin: 20px auto;
-
-
 }
 
 .ag-theme-alpine {
@@ -17,4 +15,23 @@
 
 .mat-slide-toggle {
     display: inline-block;
+}
+
+.view-btn {
+    border: none;
+    background: none;
+    cursor: pointer;
+}
+
+.view-btn img {
+    width: 20px;
+    height: 20px;
+}
+
+.invoice-container button {
+    margin-right: 10px;
+}
+
+.invoice-container button:last-of-type {
+    margin-right: 0;
 }

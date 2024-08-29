@@ -1,3 +1,5 @@
+import { InvoiceProduct } from "./invoice-product.model";
+
 export interface Product {
   id: number;
   name: string;
@@ -5,6 +7,7 @@ export interface Product {
   status: 'ACTIVE' | 'INACTIVE';
   createdTime: Date;
   updatedTime: Date;
+  invoiceProducts?: InvoiceProduct[] | null;
 }
 
 export interface AddProductReqeust {
