@@ -1,19 +1,34 @@
-<div class="login-container">
-  <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-    <h2 class="login-title">Login</h2>
+<div class="min-h-screen flex flex-col md:flex-row items-center">
+  <img src="../../../assets/images/login.png" alt="Product Management"
+    class="object-cover md:h-screen h-[200px] w-full md:min-h-full lg:w-2/3 md:w-1/2">
 
-    <mat-form-field class="full-width" appearance="fill">
-      <mat-label>Username</mat-label>
-      <input matInput formControlName="username" />
-      <mat-error *ngIf="loginForm.get('username')?.invalid">Username is required</mat-error>
-    </mat-form-field>
+  <div class="p-6 md:p-12 w-full md:w-1/2 min-h-full lg:w-1/3">
+    <div class="text-2xl font-bold text-center pb-12">
+      POS Management
+      <div class="text-sm font-light">by Group 1 FPT Indonesia Intern 2024</div>
+    </div>
+    <form [formGroup]="loginForm">
+      <div class="mb-2">
+        <div class="font-bold pb-1">Username</div>
+        <input class="w-full p-2 border border-stone-400 rounded-md" placeholder="Enter username..."
+          formControlName="username" />
+        <mat-error *ngIf="loginForm.get('username')?.invalid" class="text-red-500">*username is required</mat-error>
+      </div>
 
-    <mat-form-field class="full-width" appearance="fill">
-      <mat-label>Password</mat-label>
-      <input matInput type="password" formControlName="password" />
-      <mat-error *ngIf="loginForm.get('password')?.invalid">Password is required</mat-error>
-    </mat-form-field>
+      <div>
+        <div class="font-bold pb-1">Password</div>
+        <input type="password" class="w-full p-2 border border-stone-400 rounded-md" placeholder="Enter password..."
+          formControlName="password" />
+        <mat-error *ngIf="loginForm.get('password')?.invalid" class="text-red-500">*password is required</mat-error>
+      </div>
 
-    <button mat-raised-button color="primary" type="submit" class="login-button">Login</button>
-  </form>
+      <div class="pt-5">
+        <button type="submit"
+          class="bg-[#F37022] font-semibold w-full text-white px-4 py-2 rounded-md hover:bg-[#df763a] transition-all disabled:bg-gray-400"
+          [disabled]="loginForm.invalid" (click)="onSubmit()">
+          Save
+        </button>
+      </div>
+    </form>
+  </div>
 </div>
