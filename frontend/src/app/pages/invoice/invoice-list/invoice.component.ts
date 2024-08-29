@@ -10,7 +10,6 @@ import { HttpClientModule } from '@angular/common/http';
 import { ICellRendererParams } from 'ag-grid-community';
 import { SearchBarInvoiceComponent } from '../../../main/components/search-bar-invoice/search-bar-invoice.component';
 import { switchMap } from 'rxjs/operators';
-import { ActionRendererComponent } from './action-renderer.component';
 
 @Component({
   selector: 'app-invoice',
@@ -34,17 +33,18 @@ export class InvoiceComponent {
     { field: 'createdTime', headerName: 'Created Time', sortable: true, filter: true, valueFormatter: this.dateFormatter },
     { field: 'updatedTime', headerName: 'Updated Time', sortable: true, filter: true, valueFormatter: this.dateFormatter },
     {
-        field: 'actions',
-        headerName: 'Actions',
-        cellRenderer: ActionRendererComponent,
-        cellRendererParams: {
-            onEdit: this.editInvoiceProduct.bind(this),
-            onDelete: this.deleteInvoiceProduct.bind(this),
-        },
-        sortable: false,
-        filter: false,
+      field: 'actions',
+      headerName: 'Actions',
+      cellRenderer: 'actionsCellRenderer',
+      cellRendererParams: {
+        onEdit: this.editInvoice.bind(this),
+        onDelete: this.deleteInvoice.bind(this),
+      },
+      sortable: false,
+      filter: false,
     }
-];
+  ];
+
 
 
   public defaultColDef: ColDef = {
@@ -54,7 +54,25 @@ export class InvoiceComponent {
   };
 
   constructor(private invoiceService: InvoiceService) {
-    this.invoiceProduct$ = this.invoiceService.getAllInvoiceProducts();
+    this.invoice$ = this.searchParamsSubject.asObservable().pipe(
+      switchMap(params => {
+        const startDateYear = params.startDate?.year;
+        const startDateMonth = params.startDate?.month;
+        const endDateYear = params.endDate?.year;
+        const endDateMonth = params.endDate?.month;
+
+        return this.invoiceService.getInvoicesByCriteria(
+          params.customerId,
+          params.customerName,
+          startDateYear,
+          startDateMonth,
+          undefined,
+          undefined,
+          0,
+          10
+        );
+      })
+    );
   }
 
   private gridApi: any;
@@ -80,5 +98,14 @@ export class InvoiceComponent {
     let rowData: InvoiceProductDTO[] = [];
     this.gridApi.forEachNode((node: { data: InvoiceProductDTO; }) => rowData.push(node.data));
     return rowData[index];
+  }
+
+  onSearch(criteria: {
+    customerId?: string;
+    customerName?: string;
+    startDate?: { year: number; month: number };
+    endDate?: { year: number; month: number };
+  }) {
+    this.searchParamsSubject.next(criteria);
   }
 }

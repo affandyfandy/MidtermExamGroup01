@@ -45,8 +45,6 @@ export class ProductComponent {
     { field: 'id', headerName: 'ID', sortable: true, filter: true, headerClass: 'text-center', flex: 1 },
     { field: 'name', headerName: 'Name', sortable: true, filter: true, headerClass: 'text-center', flex: 2 },
     { field: 'price', headerName: 'Price', sortable: true, filter: true, headerClass: 'text-center', flex: 2 },
-    { field: 'createdTime', headerName: 'Created Time', sortable: true, filter: true, valueFormatter: this.dateFormatter, headerClass: 'text-center', flex: 2 },
-    { field: 'updatedTime', headerName: 'Updated Time', sortable: true, filter: true, valueFormatter: this.dateFormatter, headerClass: 'text-center', flex: 2 },
     {
       field: 'status',
       headerName: 'Status',
@@ -102,7 +100,7 @@ export class ProductComponent {
           this.getProducts();
         },
         (error) => {
-          this.snackBar.open('Import successful!', 'Close', {
+          this.snackBar.open('Import failed. Please try again.', 'Close', {
             duration: 3000,
             verticalPosition: 'top',
           });
@@ -115,10 +113,5 @@ export class ProductComponent {
 
   onGridReady(params: any) {
     this.gridApi = params.api;
-  }
-
-  dateFormatter(params: any) {
-    const date = new Date(params.value);
-    return date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
   }
 }

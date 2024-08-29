@@ -1,23 +1,8 @@
-<div class="invoice-product-container">
-  <div class="flex justify-between align-middle">
-    <div class="w-full">
-      <!-- Optionally, you can add content here, like filters or additional actions -->
-    </div>
-    <button
-        class="bg-green-500 text-white px-3 py-2 rounded-md hover:bg-green-600 transition-all h-fit w-[150px]">
-        + Add New
-    </button>
-  </div>
-
+<div class="invoice-container">
+  <app-search-invoice (search)="onSearch($event)"></app-search-invoice>
   <div class="invoice-grid">
-    <ag-grid-angular
-        style="width: 100%;"
-        class="ag-theme-alpine"
-        [rowData]="invoiceProduct$ | async"
-        [columnDefs]="columnDefs"
-        [defaultColDef]="defaultColDef"
-        (gridReady)="onGridReady($event)"
-        [rowHeight]="rowHeight">
+    <ag-grid-angular style="width: 100%;" class="ag-theme-alpine" [rowData]="invoice$ | async" [columnDefs]="columnDefs"
+      [defaultColDef]="defaultColDef" (gridReady)="onGridReady($event)" [rowHeight]="rowHeight">
     </ag-grid-angular>
   </div>
 </div>

@@ -35,10 +35,6 @@ public class ExcelUtil {
                     continue;
                 }
 
-                if (getCellValueAsString(row.getCell(0)).isEmpty()) {
-                    continue;
-                }
-
                 Product product = new Product();
                 product.setName(getCellValueAsString(row.getCell(0)));
                 product.setPrice(getCellValueAsBigDecimal(row.getCell(1)));
