@@ -5,7 +5,8 @@
             <input matInput [(ngModel)]="searchText" (input)="getCustomers()" placeholder="Search here..." />
         </mat-form-field>
 
-        <button class="bg-green-500 text-white px-3 py-2 rounded-md hover:bg-green-600 transition-all h-fit">
+        <button (click)="addCustomer()"
+            class="bg-green-500 text-white px-3 py-2 rounded-md hover:bg-green-600 transition-all h-fit">
             + Add New
         </button>
     </div>

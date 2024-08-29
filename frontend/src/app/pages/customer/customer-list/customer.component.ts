@@ -71,6 +71,10 @@ export class CustomerComponent {
     });
   }
 
+  public addCustomer() {
+    this.router.navigate([`/customer/create`]);
+  }
+
   getRowDataByIndex(index: number): Customer {
     let rowData: Customer[] = [];
     this.gridApi.forEachNode((node: { data: Customer; }) => rowData.push(node.data));
