@@ -16,3 +16,15 @@
 .mat-slide-toggle {
     display: inline-block;
 }
+
+.view-btn {
+    border: none;
+    background: none;
+    cursor: pointer;
+}
+  
+.view-btn img {
+    width: 20px;
+    height: 20px;
+}
+  

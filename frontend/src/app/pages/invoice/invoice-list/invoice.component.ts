@@ -11,6 +11,7 @@ import { ICellRendererParams } from 'ag-grid-community';
 import { SearchBarInvoiceComponent } from '../../../main/components/search-bar-invoice/search-bar-invoice.component';
 import { switchMap } from 'rxjs/operators';
 import { Router } from '@angular/router';
+import { InvoiceActionRendererComponent } from './invoice-action-renderer.component';
 
 @Component({
   selector: 'app-invoice',
@@ -41,18 +42,12 @@ export class InvoiceComponent {
     {
       field: 'actions',
       headerName: 'Actions',
-      cellRenderer: 'actionsCellRenderer',
-      cellRendererParams: {
-        onEdit: this.editInvoice.bind(this),
-        onDelete: this.deleteInvoice.bind(this),
-      },
+      cellRenderer: InvoiceActionRendererComponent,
       sortable: false,
       filter: false,
     }
   ];
   
-  
-
   public defaultColDef: ColDef = {
     resizable: true,
     sortable: true,
@@ -100,8 +95,10 @@ export class InvoiceComponent {
   actionsCellRenderer(params: ICellRendererParams) {
     const editButton = `<button class="edit-btn" (click)="onEdit(params.data)">Edit</button>`;
     const deleteButton = `<button class="delete-btn" (click)="onDelete(params.data)">Delete</button>`;
-    return editButton + deleteButton;
+    const viewButton = `<button class="view-btn" (click)="onView(params.data)"><img src="/public/view.png" alt="View" /></button>`;
+    return editButton + deleteButton + viewButton;
   }
+  
 
 
   editInvoice(invoice: Invoice) {

@@ -41,9 +41,9 @@ export class InvoiceAddComponent implements OnInit {
     });
 
     this.products = [
-      { id: 1, name: 'Product 1', price: 100, status: Status.ACTIVE, createdTime: new Date(), updatedTime: new Date(), invoiceProducts: [] },
-      { id: 2, name: 'Product 2', price: 200, status: Status.ACTIVE, createdTime: new Date(), updatedTime: new Date(), invoiceProducts: [] },
-      { id: 3, name: 'Product 3', price: 150, status: Status.ACTIVE, createdTime: new Date(), updatedTime: new Date(), invoiceProducts: [] }
+      { id: 4, name: 'Product 1', price: 100, status: Status.ACTIVE, createdTime: new Date(), updatedTime: new Date(), invoiceProducts: [] },
+      { id: 5, name: 'Product 2', price: 200, status: Status.ACTIVE, createdTime: new Date(), updatedTime: new Date(), invoiceProducts: [] },
+      { id: 6, name: 'Product 3', price: 150, status: Status.ACTIVE, createdTime: new Date(), updatedTime: new Date(), invoiceProducts: [] }
     ];
   }
 
@@ -60,15 +60,15 @@ export class InvoiceAddComponent implements OnInit {
   }
 
   addInvoice() {
-    const newInvoice: Invoice = {
-      id: '',
-      customer: this.selectedCustomer,
-      invoiceAmount: this.invoiceProducts.reduce((sum, product) => sum + (product.amount || 0), 0),
-      invoiceDate: new Date(),
-      createdTime: new Date(),
-      updatedTime: new Date(),
-      invoiceProducts: this.invoiceProducts
+    const newInvoice = {
+      customer: { id: this.selectedCustomer?.id ?? '' },
+      invoiceProducts: this.invoiceProducts.map(p => ({
+        product: { id: p.productId },
+        quantity: p.quantity
+      }))
     };
+
+    console.log('Payload to be sent:', newInvoice); // Log the payload
 
     this.invoiceService.addInvoice(newInvoice).subscribe({
       next: (invoice) => {
@@ -80,6 +80,7 @@ export class InvoiceAddComponent implements OnInit {
       }
     });
   }
+  
 
   onProductChange(product: InvoiceProduct) {
     const selectedProduct = this.products.find(p => p.id === product.productId);

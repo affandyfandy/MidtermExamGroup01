@@ -1,1 +1,46 @@
-<p>invoice-detail works!</p>
+<div *ngIf="invoice$ | async as invoice; else loading">
+  <h2>Invoice Details</h2>
+
+  <!-- Invoice Information -->
+  <div class="invoice-info">
+    <div class="info-section">
+      <p><strong>ID:</strong> {{ invoice.id }}</p>
+      <p><strong>Date:</strong> {{ invoice.invoiceDate | date: 'longDate' }}</p>
+    </div>
+    <div class="info-section">
+      <p><strong>Customer ID:</strong> {{ invoice.customer?.id }}</p>
+      <p><strong>Customer Name:</strong> {{ invoice.customer?.name }}</p>
+    </div>
+  </div>
+
+  <!-- Product List Table -->
+  <h3>List of Products:</h3>
+  <table class="product-table">
+    <thead>
+      <tr>
+        <th>Product Name</th>
+        <th>Quantity</th>
+        <th>Price</th>
+        <th>Amount</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let product of invoice.invoiceProducts">
+        <td>{{ product.product?.name }}</td>
+        <td>{{ product.quantity }}</td>
+        <td>{{ product.price | currency }}</td>
+        <td>{{ product.amount | currency }}</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- Total Amount -->
+  <div class="total-amount">
+    <p><strong>Total:</strong> {{ calculateTotal(invoice.invoiceProducts) | currency }}</p>
+  </div>
+</div>
+
+<!-- Loading Template -->
+<ng-template #loading>
+  <p>Loading invoice details...</p>
+</ng-template>
