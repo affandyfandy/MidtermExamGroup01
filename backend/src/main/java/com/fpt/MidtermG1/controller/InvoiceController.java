@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.CrossOrigin;
 
 import com.fpt.MidtermG1.dto.InvoiceDTO;
 import com.fpt.MidtermG1.service.InvoiceService;
@@ -29,6 +30,7 @@ import lombok.AllArgsConstructor;
 @RestController
 @AllArgsConstructor
 @RequestMapping("/api/v1/invoices")
+@CrossOrigin("http://localhost:4200")
 public class InvoiceController {
     private final InvoiceService invoiceService;
 
