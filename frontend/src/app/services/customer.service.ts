@@ -34,4 +34,14 @@ export class CustomerService {
   deleteCustomer(id: number): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
+
+  activateCustomer(id: string): Observable<Customer> {
+    const url = `${this.apiUrl}/activate/${id}`;
+    return this.http.put<Customer>(url, {});
+  }
+
+  deactivateCustomer(id: string): Observable<Customer> {
+    const url = `${this.apiUrl}/deactivate/${id}`;
+    return this.http.put<Customer>(url, {});
+  }
 }
