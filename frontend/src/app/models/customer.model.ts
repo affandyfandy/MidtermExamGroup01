@@ -1,5 +1,5 @@
 export interface Customer {
-  id: number;
+  id: string;
   name: string;
   phoneNumber: string;
   status: 'ACTIVE' | 'INACTIVE';
