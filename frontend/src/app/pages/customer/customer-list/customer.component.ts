@@ -65,8 +65,8 @@ export class CustomerComponent {
     this.getCustomers();
   }
 
-  getCustomers() {
-    this.customerService.getCustomers().subscribe((response) => {
+  public getCustomers() {
+    this.customerService.getCustomers(this.searchText).subscribe((response) => {
       this.customers = response.content ?? [];
     });
   }

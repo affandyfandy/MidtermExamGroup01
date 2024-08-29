@@ -13,8 +13,14 @@ export class CustomerService {
 
   constructor(private http: HttpClient) { }
 
-  getCustomers(): Observable<PaginatedResponse<Customer>> {
-    return this.http.get<PaginatedResponse<Customer>>(this.apiUrl);
+  getCustomers(keyword?: string): Observable<PaginatedResponse<Customer>> {
+    let params = new HttpParams()
+
+    if (keyword) {
+      params = params.set('keyword', keyword);
+    }
+
+    return this.http.get<PaginatedResponse<Customer>>(this.apiUrl, { params });
   }
 
   addCustomers(product: Customer): Observable<Customer> {
@@ -31,7 +37,7 @@ export class CustomerService {
     return this.http.get<Customer>(url);
   }
 
-  deleteCustomer(id: number): Observable<void> {
+  deleteCustomer(id: string): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
 
