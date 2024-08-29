@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, BehaviorSubject } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { AgGridModule } from 'ag-grid-angular';
 import { ColDef } from 'ag-grid-community';
@@ -9,6 +9,7 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { HttpClientModule } from '@angular/common/http';
 import { ICellRendererParams } from 'ag-grid-community';
 import { SearchBarInvoiceComponent } from '../../../main/components/search-bar-invoice/search-bar-invoice.component';
+import { switchMap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-invoice',
@@ -19,6 +20,13 @@ import { SearchBarInvoiceComponent } from '../../../main/components/search-bar-i
 })
 export class InvoiceComponent {
   public invoice$: Observable<Invoice[]>;
+
+  private searchParamsSubject = new BehaviorSubject<{
+    customerId?: string;
+    customerName?: string;
+    startDate?: { year: number; month: number };
+    endDate?: { year: number; month: number };
+  }>({});
 
   public rowHeight = 74;
 
@@ -42,6 +50,7 @@ export class InvoiceComponent {
     }
   ];
   
+  
 
   public defaultColDef: ColDef = {
     resizable: true,
@@ -50,19 +59,25 @@ export class InvoiceComponent {
   };
 
   constructor(private invoiceService: InvoiceService) {
-    this.invoice$ = this.invoiceService.getAllInvoices();
-  }
-
-  ngOnInit() {
-    this.invoice$ = this.invoiceService.getAllInvoices();
-    this.invoice$.subscribe({
-      next: (data) => {
-        console.log('Invoices data:', data);
-      },
-      error: (err) => {
-        console.error('Error fetching invoices:', err);
-      }
-    });
+    this.invoice$ = this.searchParamsSubject.asObservable().pipe(
+      switchMap(params => {
+        const startDateYear = params.startDate?.year;
+        const startDateMonth = params.startDate?.month;
+        const endDateYear = params.endDate?.year;
+        const endDateMonth = params.endDate?.month;
+        
+        return this.invoiceService.getInvoicesByCriteria(
+          params.customerId,
+          params.customerName,
+          startDateYear,
+          startDateMonth,
+          undefined,
+          undefined,
+          0,
+          10
+        );
+      })
+    );
   }
 
   private gridApi: any;
@@ -78,10 +93,10 @@ export class InvoiceComponent {
 
 
   actionsCellRenderer(params: ICellRendererParams) {
-  const editButton = `<button class="edit-btn" (click)="onEdit(params.data)">Edit</button>`;
-  const deleteButton = `<button class="delete-btn" (click)="onDelete(params.data)">Delete</button>`;
-  return editButton + deleteButton;
-}
+    const editButton = `<button class="edit-btn" (click)="onEdit(params.data)">Edit</button>`;
+    const deleteButton = `<button class="delete-btn" (click)="onDelete(params.data)">Delete</button>`;
+    return editButton + deleteButton;
+  }
 
 
   editInvoice(invoice: Invoice) {
@@ -96,5 +111,14 @@ export class InvoiceComponent {
     let rowData: Invoice[] = [];
     this.gridApi.forEachNode((node: { data: Invoice; }) => rowData.push(node.data));
     return rowData[index];
+  }
+
+  onSearch(criteria: {
+    customerId?: string;
+    customerName?: string;
+    startDate?: { year: number; month: number };
+    endDate?: { year: number; month: number };
+  }) {
+    this.searchParamsSubject.next(criteria);
   }
 }

@@ -1,7 +1,14 @@
-<app-search-invoice></app-search-invoice>
-<div class="invoice-grid">
-    <ag-grid-angular style="width: 100%;" class="ag-theme-alpine" [rowData]="invoice$ | async"
-        [columnDefs]="columnDefs" [defaultColDef]="defaultColDef" (gridReady)="onGridReady($event)"
-        [rowHeight]="rowHeight">
-    </ag-grid-angular>
+<div class="invoice-container">
+    <app-search-invoice (search)="onSearch($event)"></app-search-invoice>
+    <div class="invoice-grid">
+        <ag-grid-angular
+            style="width: 100%;"
+            class="ag-theme-alpine"
+            [rowData]="invoice$ | async"
+            [columnDefs]="columnDefs"
+            [defaultColDef]="defaultColDef"
+            (gridReady)="onGridReady($event)"
+            [rowHeight]="rowHeight">
+        </ag-grid-angular>
+    </div>
 </div>
