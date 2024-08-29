@@ -1,24 +1,29 @@
 import { Injectable } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
-  private loggedIn = false;
+  private isLoggedInSubject = new BehaviorSubject<boolean>(this.checkLoginStatus());
+  isLoggedIn$ = this.isLoggedInSubject.asObservable();
 
   login(username: string, password: string): boolean {
     if (username === 'admin' && password === 'admin') {
-      this.loggedIn = true;
+      localStorage.setItem('token', 'fake-jwt-token');
+      this.isLoggedInSubject.next(true);
       return true;
     }
     return false;
   }
 
-  isLoggedIn(): boolean {
-    return this.loggedIn;
+  logout(): void {
+    localStorage.removeItem('token');
+    this.isLoggedInSubject.next(false);
   }
 
-  logout(): void {
-    this.loggedIn = false;
+  checkLoginStatus(): boolean {
+    const token = localStorage.getItem('token');
+    return !!token;
   }
 }
