@@ -1,0 +1,21 @@
+.container {
+    max-width: 100%;
+}
+  
+.mat-form-field {
+    width: 100%;
+}
+  
+.flex-grow-1 {
+    flex: 1;
+}
+  
+.mx-2 {
+    margin-left: 0.5rem;
+    margin-right: 0.5rem;
+}
+  
+button.mat-icon-button {
+    background-color: #0C4CA3;
+    color: white;
+}  
