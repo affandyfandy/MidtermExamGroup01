@@ -26,5 +26,11 @@ export const routes: Routes = [
             import('./pages/invoice/invoice.routes')
                 .then(m => m.invoiceRoutes)
     },
+    {
+        path: `${RouterConfig.CUSTOMER.path}/:id`,
+        loadChildren: () =>
+            import('./pages/customer/customer.routes')
+                .then(m => m.customerRoutes)
+    },
     { path: '**', redirectTo: '/' }
 ];
