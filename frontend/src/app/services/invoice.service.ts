@@ -3,6 +3,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Invoice } from '../models/invoice.model';
 import { RevenueReport } from '../models/revenue-report.model';
+import { InvoiceProductDTO } from '../models/invoice-product-dto.model';
 
 @Injectable({
   providedIn: 'root'
@@ -16,11 +17,8 @@ export class InvoiceService {
     return this.http.get<Invoice>(`${this.apiUrl}/${id}`);
   }
 
-  getAllInvoices(page: number = 0, size: number = 10): Observable<Invoice[]> {
-    const params = new HttpParams()
-      .set('page', page.toString())
-      .set('size', size.toString());
-    return this.http.get<Invoice[]>(this.apiUrl, { params });
+  getAllInvoiceProducts(): Observable<InvoiceProductDTO[]> {
+    return this.http.get<InvoiceProductDTO[]>(`${this.apiUrl}/products`);
   }
 
   addInvoice(invoice: Invoice): Observable<Invoice> {
@@ -44,16 +42,16 @@ export class InvoiceService {
     let params = new HttpParams()
       .set('page', page.toString())
       .set('size', size.toString());
-  
+
     if (customerId) params = params.set('customerId', customerId);
     if (customerName) params = params.set('customerName', customerName);
     if (year !== undefined) params = params.set('year', year.toString());
     if (month !== undefined) params = params.set('month', month.toString());
     if (invoiceAmountCondition) params = params.set('invoiceAmountCondition', invoiceAmountCondition);
     if (invoiceAmount !== undefined) params = params.set('invoiceAmount', invoiceAmount.toString());
-  
+
     return this.http.get<Invoice[]>(`${this.apiUrl}/search`, { params });
-  }  
+  }
 
   exportToPDF(): Observable<Blob> {
     return this.http.get(`${this.apiUrl}/export-pdf`, { responseType: 'blob' });
@@ -68,7 +66,7 @@ export class InvoiceService {
     invoiceAmount?: number
   ): Observable<Blob> {
     let params = new HttpParams();
-    
+
     if (customerId) params = params.set('customerId', customerId);
     if (customerName) params = params.set('customerName', customerName);
     if (year) params = params.set('year', year.toString());
@@ -81,7 +79,7 @@ export class InvoiceService {
 
   getRevenueReport(year?: number, month?: number, day?: number): Observable<RevenueReport[]> {
     let params = new HttpParams();
-    
+
     if (year) params = params.set('year', year.toString());
     if (month) params = params.set('month', month.toString());
     if (day) params = params.set('day', day.toString());

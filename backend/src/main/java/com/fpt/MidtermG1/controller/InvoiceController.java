@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.CrossOrigin;
 
 import com.fpt.MidtermG1.dto.InvoiceDTO;
+import com.fpt.MidtermG1.dto.InvoiceProductDTO;
 import com.fpt.MidtermG1.service.InvoiceService;
 import lombok.AllArgsConstructor;
 
@@ -44,6 +45,11 @@ public class InvoiceController {
     public ResponseEntity<InvoiceDTO> editInvoice(@PathVariable String id, @RequestBody InvoiceDTO invoiceDTO) {
         InvoiceDTO updatedInvoice = invoiceService.editInvoice(id, invoiceDTO);
         return ResponseEntity.ok(updatedInvoice);
+    }
+
+    @GetMapping("/products")
+    public List<InvoiceProductDTO> getAllInvoiceProducts() {
+        return invoiceService.getAllInvoiceProducts();
     }
 
     @GetMapping("/{id}")

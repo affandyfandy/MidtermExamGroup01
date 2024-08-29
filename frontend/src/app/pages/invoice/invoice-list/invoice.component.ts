@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
-import { Observable, BehaviorSubject } from 'rxjs';
+import { Observable } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { AgGridModule } from 'ag-grid-angular';
 import { ColDef } from 'ag-grid-community';
-import { Invoice } from '../../../models/invoice.model';
+import { InvoiceProductDTO } from '../../../models/invoice-product-dto.model';
 import { InvoiceService } from '../../../services/invoice.service';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { HttpClientModule } from '@angular/common/http';
@@ -20,37 +20,31 @@ import { ActionRendererComponent } from './action-renderer.component';
   styleUrls: ['./invoice.component.css']
 })
 export class InvoiceComponent {
-  public invoice$: Observable<Invoice[]>;
-
-  private searchParamsSubject = new BehaviorSubject<{
-    customerId?: string;
-    customerName?: string;
-    startDate?: { year: number; month: number };
-    endDate?: { year: number; month: number };
-  }>({});
+  public invoiceProduct$: Observable<InvoiceProductDTO[]>;
 
   public rowHeight = 74;
 
   public columnDefs: ColDef[] = [
-    { field: 'id', headerName: 'ID', sortable: true, filter: true },
-    { field: 'customer.name', headerName: 'Customer Name', sortable: true, filter: true },
-    { field: 'invoiceAmount', headerName: 'Invoice Amount', sortable: true, filter: 'agNumberColumnFilter' },
-    { field: 'invoiceDate', headerName: 'Invoice Date', sortable: true, filter: true, valueFormatter: this.dateFormatter },
+    { field: 'invoice.id', headerName: 'Invoice ID', sortable: true, filter: true },
+    { field: 'product.id', headerName: 'Product ID', sortable: true, filter: true },
+    { field: 'product.name', headerName: 'Product Name', sortable: true, filter: true },
+    { field: 'quantity', headerName: 'Quantity', sortable: true, filter: 'agNumberColumnFilter' },
+    { field: 'price', headerName: 'Price', sortable: true, filter: 'agNumberColumnFilter' },
+    { field: 'amount', headerName: 'Amount', sortable: true, filter: 'agNumberColumnFilter' },
     { field: 'createdTime', headerName: 'Created Time', sortable: true, filter: true, valueFormatter: this.dateFormatter },
     { field: 'updatedTime', headerName: 'Updated Time', sortable: true, filter: true, valueFormatter: this.dateFormatter },
     {
-      field: 'actions',
-      headerName: 'Actions',
-      cellRenderer: ActionRendererComponent,
-      cellRendererParams: {
-        onEdit: this.editInvoice.bind(this),
-        onDelete: this.deleteInvoice.bind(this),
-      },
-      sortable: false,
-      filter: false,
+        field: 'actions',
+        headerName: 'Actions',
+        cellRenderer: ActionRendererComponent,
+        cellRendererParams: {
+            onEdit: this.editInvoiceProduct.bind(this),
+            onDelete: this.deleteInvoiceProduct.bind(this),
+        },
+        sortable: false,
+        filter: false,
     }
-  ];
-
+];
 
 
   public defaultColDef: ColDef = {
@@ -60,25 +54,7 @@ export class InvoiceComponent {
   };
 
   constructor(private invoiceService: InvoiceService) {
-    this.invoice$ = this.searchParamsSubject.asObservable().pipe(
-      switchMap(params => {
-        const startDateYear = params.startDate?.year;
-        const startDateMonth = params.startDate?.month;
-        const endDateYear = params.endDate?.year;
-        const endDateMonth = params.endDate?.month;
-
-        return this.invoiceService.getInvoicesByCriteria(
-          params.customerId,
-          params.customerName,
-          startDateYear,
-          startDateMonth,
-          undefined,
-          undefined,
-          0,
-          10
-        );
-      })
-    );
+    this.invoiceProduct$ = this.invoiceService.getAllInvoiceProducts();
   }
 
   private gridApi: any;
@@ -92,34 +68,17 @@ export class InvoiceComponent {
     return date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
   }
 
-
-  actionsCellRenderer(params: ICellRendererParams) {
-    const editButton = `<button class="edit-btn" (click)="onEdit(params.data)">Edit</button>`;
-    const deleteButton = `<button class="delete-btn" (click)="onDelete(params.data)">Delete</button>`;
-    return editButton + deleteButton;
+  editInvoiceProduct(invoiceProduct: InvoiceProductDTO) {
+    console.log('Edit Invoice Product', invoiceProduct);
   }
 
-
-  editInvoice(invoice: Invoice) {
-    console.log('Edit Invoice', invoice);
+  deleteInvoiceProduct(invoiceProduct: InvoiceProductDTO) {
+    console.log('Delete Invoice Product', invoiceProduct);
   }
 
-  deleteInvoice(invoice: Invoice) {
-    console.log('Delete Invoice', invoice);
-  }
-
-  getRowDataByIndex(index: number): Invoice {
-    let rowData: Invoice[] = [];
-    this.gridApi.forEachNode((node: { data: Invoice; }) => rowData.push(node.data));
+  getRowDataByIndex(index: number): InvoiceProductDTO {
+    let rowData: InvoiceProductDTO[] = [];
+    this.gridApi.forEachNode((node: { data: InvoiceProductDTO; }) => rowData.push(node.data));
     return rowData[index];
-  }
-
-  onSearch(criteria: {
-    customerId?: string;
-    customerName?: string;
-    startDate?: { year: number; month: number };
-    endDate?: { year: number; month: number };
-  }) {
-    this.searchParamsSubject.next(criteria);
   }
 }
