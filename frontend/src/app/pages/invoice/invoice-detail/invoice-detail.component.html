@@ -1,15 +1,15 @@
 <div class="detail-container">
     <div class="container">
-        <div *ngIf="invoice$ | async as invoice; else loading">
+        <div *ngIf="invoiceProduct; else loading">
             <h2 class="detail-title">Invoice Details</h2>
 
             <!-- Invoice Information -->
             <div class="invoice-info">
                 <div class="info-section">
-                    <p><strong>ID:</strong> {{ invoice.id }}</p>
-                    <p><strong>Date:</strong> {{ invoice.invoiceDate | date: 'longDate' }}</p>
-                    <p><strong>Customer ID:</strong> {{ invoice.customer?.id }}</p>
-                    <p><strong>Customer Name:</strong> {{ invoice.customer?.name }}</p>
+                    <p><strong>ID:</strong> {{ invoiceProduct[0].invoice?.id }}</p>
+                    <p><strong>Date:</strong> {{ invoiceProduct[0].invoice?.invoiceDate | date: 'longDate' }}</p>
+                    <p><strong>Customer ID:</strong> {{ invoiceProduct[0].invoice?.customer?.id }}</p>
+                    <p><strong>Customer Name:</strong> {{ invoiceProduct[0].invoice?.customer?.name }}</p>
                 </div>
             </div>
 
@@ -25,7 +25,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr *ngFor="let product of invoice.invoiceProducts">
+                    <tr *ngFor="let product of invoiceProduct">
                         <td>{{ product.product?.name }}</td>
                         <td>{{ product.quantity }}</td>
                         <td>{{ product.price | currency }}</td>
@@ -36,7 +36,7 @@
 
             <!-- Total Amount -->
             <div class="total-amount">
-                <p><strong>Total:</strong> {{ calculateTotal(invoice.invoiceProducts) | currency }}</p>
+                <p><strong>Total:</strong> {{ calculateTotal(invoiceProduct) | currency }}</p>
             </div>
         </div>
 

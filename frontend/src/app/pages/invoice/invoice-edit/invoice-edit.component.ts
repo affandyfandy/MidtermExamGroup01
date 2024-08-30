@@ -14,11 +14,12 @@ import { Invoice } from '../../../models/invoice.model';
 import { InvoiceProduct } from '../../../models/invoice-product.model';
 import { Status } from '../../../models/status';
 import { Router, ActivatedRoute } from '@angular/router';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-invoice-edit',
   standalone: true,
-  imports: [CommonModule, FormsModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatSelectModule],
+  imports: [CommonModule, FormsModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatSelectModule, MatSnackBarModule],
   templateUrl: './invoice-edit.component.html',
   styleUrls: ['./invoice-edit.component.css']
 })
@@ -36,12 +37,13 @@ export class InvoiceEditComponent implements OnInit {
     private customerService: CustomerService,
     private productService: ProductService,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private snackBar: MatSnackBar
   ) { }
 
   ngOnInit() {
-    this.currentInvoiceId = this.route.snapshot.paramMap.get('id') || '';
-    this.loadInvoice(this.currentInvoiceId);
+    const id = this.route.snapshot.paramMap.get('id');
+    this.loadInvoice(id!);
     this.loadCustomers();
     this.loadProducts();
   }
@@ -51,36 +53,41 @@ export class InvoiceEditComponent implements OnInit {
       next: (invoice) => {
         this.invoice = invoice;
         this.selectedCustomer = invoice.customer || null;
-        this.invoiceProducts = invoice.invoiceProducts || [];
-        this.updateProductDetails();
+        this.invoiceService.getAllInvoiceProductsById(id).subscribe((response) => {
+          this.invoiceProducts = response;
+          this.updateProductDetails();
+        })
       },
       error: (err) => {
         console.error('Error loading invoice', err);
         this.error = 'Failed to load invoice data.';
+        this.showErrorSnackbar();
       }
     });
   }
 
   loadCustomers() {
     this.customerService.getCustomers(0, 100).subscribe({
-      next: (data: any) => {
-        this.customers = data.content || [];
+      next: (data) => {
+        this.customers = data.content ?? [];
       },
       error: (err) => {
         console.error('Error loading customers', err);
         this.error = 'Failed to load customer data.';
+        this.showErrorSnackbar();
       }
     });
   }
 
   loadProducts() {
     this.productService.getProducts(0, 100).subscribe({
-      next: (products: Product[]) => {
-        this.products = products;
+      next: (products) => {
+        this.products = products.content ?? [];
       },
       error: (err) => {
         console.error('Error loading products', err);
         this.error = 'Failed to load product data.';
+        this.showErrorSnackbar(err);
       }
     });
   }
@@ -135,10 +142,10 @@ export class InvoiceEditComponent implements OnInit {
     this.invoiceService.editInvoice(this.currentInvoiceId, updatedInvoice).subscribe({
       next: (invoice) => {
         console.log('Invoice updated successfully', invoice);
-        this.router.navigate(['/invoices']);
+        this.router.navigate(['/invoice']);
       },
       error: (error) => {
-        console.error('Error updating invoice', error);
+        this.showErrorSnackbar('Failed to update invoice');
       }
     });
   }
@@ -156,6 +163,24 @@ export class InvoiceEditComponent implements OnInit {
   }
 
   cancel() {
-    this.router.navigate(['/invoices']);
+    this.router.navigate(['/invoice']);
+  }
+
+  disableSave(): boolean {
+    if (!this.invoice || !this.invoice.createdTime) {
+      return false;
+    }
+
+    const createdTime = new Date(this.invoice.createdTime).getTime();
+    const currentTime = new Date().getTime();
+    const tenMinutes = 10 * 60 * 1000;
+
+    return currentTime - createdTime > tenMinutes;
+  }
+
+  showErrorSnackbar(message: string = 'Error occured') {
+    this.snackBar.open(message, 'Close', {
+      duration: 3000,
+    });
   }
 }

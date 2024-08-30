@@ -7,12 +7,11 @@ import java.math.BigDecimal;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
-import com.fpt.MidtermG1.dto.RevenueReportDTO;
-import com.fpt.MidtermG1.util.ExcelUtil;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,11 +20,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.CrossOrigin;
 
 import com.fpt.MidtermG1.dto.InvoiceDTO;
 import com.fpt.MidtermG1.dto.InvoiceProductDTO;
+import com.fpt.MidtermG1.dto.RevenueReportDTO;
 import com.fpt.MidtermG1.service.InvoiceService;
+import com.fpt.MidtermG1.util.ExcelUtil;
+
 import lombok.AllArgsConstructor;
 
 @RestController
@@ -34,6 +35,11 @@ import lombok.AllArgsConstructor;
 @CrossOrigin("http://localhost:4200")
 public class InvoiceController {
     private final InvoiceService invoiceService;
+
+    @GetMapping("/products/{invoiceId}")
+    public List<InvoiceProductDTO> getInvoiceProductsByInvoiceId(@PathVariable String invoiceId) {
+        return invoiceService.getInvoiceProductsByInvoiceId(invoiceId);
+    }
 
     @PostMapping
     public ResponseEntity<InvoiceDTO> addInvoice(@RequestBody InvoiceDTO invoiceDTO) {

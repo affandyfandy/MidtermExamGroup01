@@ -15,17 +15,13 @@ import { switchMap, tap } from 'rxjs/operators';
   styleUrls: ['./invoice-detail.component.css']
 })
 export class InvoiceDetailComponent {
-  invoice$: Observable<Invoice>;
+  invoiceProduct: InvoiceProduct[] = [];
 
   constructor(private route: ActivatedRoute, private invoiceService: InvoiceService) {
-    this.invoice$ = this.route.paramMap.pipe(
-      switchMap(params => {
-        const id = params.get('id') || '';
-        return this.invoiceService.getInvoiceById(id);
-      }),
-      tap(invoice => console.log('Fetched Invoice:', invoice)) // Log the fetched invoice
-    );
-
+    const id = this.route.snapshot.paramMap.get('id');
+    this.invoiceService.getAllInvoiceProductsById(id!).subscribe((response) => {
+      this.invoiceProduct = response;
+    })
   }
 
   calculateTotal(invoiceProducts: InvoiceProduct[] | null): number {

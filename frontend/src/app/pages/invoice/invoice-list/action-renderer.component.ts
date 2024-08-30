@@ -11,12 +11,14 @@ import { InvoiceService } from '../../../services/invoice.service';
   standalone: true,
   imports: [MatButtonModule, MatIconModule],
   template: `
-    <button mat-mini-fab color="primary" (click)="onEdit()" class="action-button">
-      <mat-icon>edit</mat-icon>
+  <div class="flex">
+    <button (click)="onEdit()" class="w-11 h-11 bg-[#0C4CA3] hover:bg-[#2a5695] rounded-lg flex items-center justify-center mt-[2px] transition-all mr-2">
+      <mat-icon class="text-white">edit</mat-icon>
     </button>
-    <button mat-mini-fab color="primary" (click)="onView()" class="action-button">
-      <mat-icon>visibility</mat-icon>
+    <button (click)="onView()" class="w-11 h-11 bg-[#0C4CA3] hover:bg-[#2a5695] rounded-lg flex items-center justify-center mt-[2px] transition-all">
+      <mat-icon class="text-white">visibility</mat-icon>
     </button>
+  </div>
   `,
   styles: [`
     .action-button {

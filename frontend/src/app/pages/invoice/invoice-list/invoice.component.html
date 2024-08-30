@@ -1,13 +1,15 @@
 <div class="invoice-container">
   <app-search-invoice (search)="onSearch($event)"></app-search-invoice>
-  <button class="bg-green-500 text-white px-3 py-2 rounded-md hover:bg-green-600 transition-all h-fit"
-    (click)="navigateToAddInvoice()">
-    + Add New
-  </button>
-  <button class="bg-blue-500 text-white px-3 py-2 rounded-md hover:bg-blue-600 transition-all h-fit"
-    (click)="exportToPDF()">
-    Export PDF
-  </button>
+  <div class="flex ml-3">
+    <button class="bg-green-500 text-white px-3 py-2 rounded-md hover:bg-green-600 transition-all h-fit"
+      (click)="navigateToAddInvoice()">
+      + Add New
+    </button>
+    <button class="bg-blue-500 text-white px-3 py-2 rounded-md hover:bg-blue-600 transition-all h-fit"
+      (click)="exportToPDF()">
+      Export PDF
+    </button>
+  </div>
   <div class="invoice-grid">
     <ag-grid-angular style="width: 100%;" class="ag-theme-alpine" [rowData]="invoice$ | async" [columnDefs]="columnDefs"
       [defaultColDef]="defaultColDef" (gridReady)="onGridReady($event)" [rowHeight]="rowHeight">

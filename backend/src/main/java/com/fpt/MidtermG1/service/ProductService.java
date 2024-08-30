@@ -1,11 +1,12 @@
 package com.fpt.MidtermG1.service;
 
-import com.fpt.MidtermG1.dto.ProductDTO;
+import java.io.InputStream;
+import java.util.Optional;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import java.io.InputStream;
-import java.util.Optional;
+import com.fpt.MidtermG1.dto.ProductDTO;
 
 public interface ProductService {
     Page<ProductDTO> listAllProduct(Pageable pageable, String search);

@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { Invoice } from '../models/invoice.model';
 import { RevenueReport } from '../models/revenue-report.model';
 import { InvoiceProductDTO } from '../models/invoice-product-dto.model';
+import { InvoiceProduct } from '../models/invoice-product.model';
 
 @Injectable({
   providedIn: 'root'
@@ -22,6 +23,14 @@ export class InvoiceService {
       .set('page', page.toString())
       .set('size', size.toString());
     return this.http.get<Invoice[]>(this.apiUrl, { params });
+  }
+
+  getAllInvoiceProducts(): Observable<InvoiceProduct[]> {
+    return this.http.get<InvoiceProduct[]>(`${this.apiUrl}/products`);
+  }
+
+  getAllInvoiceProductsById(id: string): Observable<InvoiceProduct[]> {
+    return this.http.get<InvoiceProduct[]>(`${this.apiUrl}/products/${id}`);
   }
 
   addInvoice(invoice: { customer: { id: string }; invoiceProducts: { product: { id: number }; quantity: number }[] }): Observable<any> {
