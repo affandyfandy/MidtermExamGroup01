@@ -12,11 +12,12 @@ import { SearchBarInvoiceComponent } from '../../../main/components/search-bar-i
 import { switchMap } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { InvoiceActionRendererComponent } from './action-renderer.component';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-invoice',
   standalone: true,
-  imports: [CommonModule, AgGridModule, MatSlideToggleModule, HttpClientModule, SearchBarInvoiceComponent],
+  imports: [CommonModule, AgGridModule, MatSlideToggleModule, HttpClientModule, SearchBarInvoiceComponent, MatSnackBarModule],
   templateUrl: './invoice.component.html',
   styleUrls: ['./invoice.component.css']
 })
@@ -54,7 +55,11 @@ export class InvoiceComponent {
     filter: true,
   };
 
-  constructor(private invoiceService: InvoiceService, private router: Router) {
+  constructor(
+    private invoiceService: InvoiceService,
+    private router: Router,
+    private snackBar: MatSnackBar
+  ) {
     this.invoice$ = this.searchParamsSubject.asObservable().pipe(
       switchMap(params => {
         const startDateYear = params.startDate?.year;
@@ -76,13 +81,19 @@ export class InvoiceComponent {
     );
   }
 
-  exportToPDF() {
+  exportToPDF(): void {
     this.invoiceService.exportToPDF().subscribe({
       next: () => {
-        console.log('PDF export initiated');
+        this.snackBar.open('PDF File saved to D:\invoices.pdf', 'Close', {
+          duration: 3000,
+          verticalPosition: 'top',
+        });
       },
       error: (error) => {
-        console.error('Error exporting to PDF', error);
+        this.snackBar.open('Error exporting to PDF', 'Close', {
+          duration: 3000,
+          verticalPosition: 'top',
+        });
       }
     });
   }
