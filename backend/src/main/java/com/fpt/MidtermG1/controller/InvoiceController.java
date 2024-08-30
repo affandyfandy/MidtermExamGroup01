@@ -91,7 +91,7 @@ public class InvoiceController {
     public ResponseEntity<String> exportToPDF() {
         byte[] pdfBytes = invoiceService.exportAllInvoicesToPDF();
 
-        Path path = Paths.get("src/main/resources/invoices.pdf");
+        Path path = Paths.get("D:/invoices.pdf");
         File file = path.toFile();
 
         try (FileOutputStream fos = new FileOutputStream(file)) {
