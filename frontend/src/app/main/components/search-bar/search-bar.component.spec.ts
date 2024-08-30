@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { TableInvoiceComponent } from './table-invoice.component';
+import { SearchBarComponent } from './search-bar.component';
 
-describe('TableInvoiceComponent', () => {
-  let component: TableInvoiceComponent;
-  let fixture: ComponentFixture<TableInvoiceComponent>;
+describe('SearchBarComponent', () => {
+  let component: SearchBarComponent;
+  let fixture: ComponentFixture<SearchBarComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [TableInvoiceComponent]
+      imports: [SearchBarComponent]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(TableInvoiceComponent);
+    fixture = TestBed.createComponent(SearchBarComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

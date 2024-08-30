@@ -1,14 +1,5 @@
 package com.fpt.MidtermG1.util;
 
-import com.fpt.MidtermG1.data.entity.Product;
-import com.fpt.MidtermG1.common.Status;
-import com.fpt.MidtermG1.dto.InvoiceDTO;
-import com.fpt.MidtermG1.dto.InvoiceProductDTO;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -19,6 +10,16 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+
+import com.fpt.MidtermG1.common.Status;
+import com.fpt.MidtermG1.data.entity.Product;
+import com.fpt.MidtermG1.dto.InvoiceDTO;
+import com.fpt.MidtermG1.dto.InvoiceProductDTO;
 
 public class ExcelUtil {
 
@@ -32,6 +33,10 @@ public class ExcelUtil {
 
             for (Row row : sheet) {
                 if (row.getRowNum() == 0) {
+                    continue;
+                }
+
+                if (getCellValueAsString(row.getCell(0)).isEmpty()) {
                     continue;
                 }
 

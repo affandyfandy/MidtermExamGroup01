@@ -13,7 +13,9 @@ public interface InvoiceService {
     InvoiceDTO getInvoiceById(String id);
     List<InvoiceDTO> getAllInvoices(int page, int size);
     InvoiceProductDTO addInvoiceProduct(InvoiceProductDTO invoiceProductDTO);
+    List<InvoiceProductDTO> getAllInvoiceProducts();
     byte[] exportAllInvoicesToPDF();
     List<InvoiceDTO> getInvoicesByCriteria(String customerId, String customerName, int year, int month, String invoiceAmountCondition, BigDecimal invoiceAmount, int page, int size);
     List<RevenueReportDTO> getRevenueByPeriod(Integer year, Integer month, Integer day);
+    List<InvoiceProductDTO> getInvoiceProductsByInvoiceId(String invoiceId);
 }

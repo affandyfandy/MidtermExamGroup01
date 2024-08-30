@@ -1,9 +1,5 @@
 package com.fpt.MidtermG1.data.repository;
 
-import com.fpt.MidtermG1.data.entity.Invoice;
-import com.fpt.MidtermG1.data.entity.InvoiceProduct;
-import com.fpt.MidtermG1.data.entity.InvoiceProductId;
-
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -11,6 +7,10 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
+
+import com.fpt.MidtermG1.data.entity.Invoice;
+import com.fpt.MidtermG1.data.entity.InvoiceProduct;
+import com.fpt.MidtermG1.data.entity.InvoiceProductId;
 
 public interface InvoiceProductRepository extends JpaRepository<InvoiceProduct, InvoiceProductId> {
 
@@ -21,4 +21,6 @@ public interface InvoiceProductRepository extends JpaRepository<InvoiceProduct, 
 
     @Query("SELECT ip FROM InvoiceProduct ip JOIN FETCH ip.invoice i JOIN FETCH i.customer c JOIN FETCH ip.product p")
     List<InvoiceProduct> findAllWithDetails();
+
+    List<InvoiceProduct> findByInvoiceId(String invoiceId);
 }

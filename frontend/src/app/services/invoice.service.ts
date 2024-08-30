@@ -3,6 +3,8 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Invoice } from '../models/invoice.model';
 import { RevenueReport } from '../models/revenue-report.model';
+import { InvoiceProductDTO } from '../models/invoice-product-dto.model';
+import { InvoiceProduct } from '../models/invoice-product.model';
 
 @Injectable({
   providedIn: 'root'
@@ -23,11 +25,19 @@ export class InvoiceService {
     return this.http.get<Invoice[]>(this.apiUrl, { params });
   }
 
-  addInvoice(invoice: Invoice): Observable<Invoice> {
-    return this.http.post<Invoice>(this.apiUrl, invoice);
+  getAllInvoiceProducts(): Observable<InvoiceProduct[]> {
+    return this.http.get<InvoiceProduct[]>(`${this.apiUrl}/products`);
   }
 
-  editInvoice(id: string, invoice: Invoice): Observable<Invoice> {
+  getAllInvoiceProductsById(id: string): Observable<InvoiceProduct[]> {
+    return this.http.get<InvoiceProduct[]>(`${this.apiUrl}/products/${id}`);
+  }
+
+  addInvoice(invoice: { customer: { id: string }; invoiceProducts: { product: { id: number }; quantity: number }[] }): Observable<any> {
+    return this.http.post<any>(this.apiUrl, invoice);
+  }
+
+  editInvoice(id: string, invoice: { customer: { id: string }; invoiceProducts: { product: { id: number }; quantity: number }[] }): Observable<any> {
     return this.http.put<Invoice>(`${this.apiUrl}/${id}`, invoice);
   }
 
@@ -47,10 +57,10 @@ export class InvoiceService {
 
     if (customerId) params = params.set('customerId', customerId);
     if (customerName) params = params.set('customerName', customerName);
-    if (year) params = params.set('year', year.toString());
-    if (month) params = params.set('month', month.toString());
+    if (year !== undefined) params = params.set('year', year.toString());
+    if (month !== undefined) params = params.set('month', month.toString());
     if (invoiceAmountCondition) params = params.set('invoiceAmountCondition', invoiceAmountCondition);
-    if (invoiceAmount) params = params.set('invoiceAmount', invoiceAmount.toString());
+    if (invoiceAmount !== undefined) params = params.set('invoiceAmount', invoiceAmount.toString());
 
     return this.http.get<Invoice[]>(`${this.apiUrl}/search`, { params });
   }
@@ -68,7 +78,7 @@ export class InvoiceService {
     invoiceAmount?: number
   ): Observable<Blob> {
     let params = new HttpParams();
-    
+
     if (customerId) params = params.set('customerId', customerId);
     if (customerName) params = params.set('customerName', customerName);
     if (year) params = params.set('year', year.toString());
@@ -81,7 +91,7 @@ export class InvoiceService {
 
   getRevenueReport(year?: number, month?: number, day?: number): Observable<RevenueReport[]> {
     let params = new HttpParams();
-    
+
     if (year) params = params.set('year', year.toString());
     if (month) params = params.set('month', month.toString());
     if (day) params = params.set('day', day.toString());

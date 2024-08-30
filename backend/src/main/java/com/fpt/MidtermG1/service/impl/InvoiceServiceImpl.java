@@ -121,6 +121,22 @@ public class InvoiceServiceImpl implements InvoiceService {
     }
 
     @Override
+    public List<InvoiceProductDTO> getAllInvoiceProducts() {
+    List<InvoiceProduct> invoiceProducts = invoiceProductRepository.findAll();
+    return invoiceProducts.stream()
+            .map(InvoiceProduct::toDTO)
+            .collect(Collectors.toList());
+}
+
+    @Override
+    public List<InvoiceProductDTO> getInvoiceProductsByInvoiceId(String invoiceId) {
+        List<InvoiceProduct> invoiceProducts = invoiceProductRepository.findByInvoiceId(invoiceId);
+        return invoiceProducts.stream()
+                .map(InvoiceProduct::toDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
     @Transactional
     public InvoiceDTO editInvoice(String id, InvoiceDTO invoiceDTO) {
         Invoice existingInvoice = invoiceRepository.findById(id)

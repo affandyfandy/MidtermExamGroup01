@@ -1,0 +1,31 @@
+<div class="p-12">
+    <div class="flex justify-between align-middle">
+        <input type="search" [(ngModel)]="searchText" (input)="getProducts()" placeholder="Search here..."
+            class="md:w-[500px] sm:w-[200px] bg-[#E7E7E7] rounded-md px-2" />
+
+        <div class="flex">
+            <input type="file" id="fileInput" (change)="importFile($event)" class="hidden" accept=".xls,.xlsx">
+            <label for="fileInput"
+                class="cursor-pointer bg-green-100 text-green-500 px-3 py-2 rounded-md hover:bg-green-200 transition-all h-fit inline-block mr-2">
+                <div class="flex">
+                    <mat-icon class="text-green-500 mr-1">description</mat-icon>
+                    Import Data
+                </div>
+            </label>
+            <button (click)="addProduct()"
+                class="bg-green-500 text-white px-3 py-2 rounded-md hover:bg-green-600 transition-all h-fit">
+                <div class="flex">
+                    <mat-icon class="text-white mr-1">add</mat-icon>
+                    Add New
+                </div>
+            </button>
+        </div>
+    </div>
+
+    <div class="product-grid mt-4">
+        <ag-grid-angular style="width: 100%;" class="ag-theme-alpine" [rowData]="products" [columnDefs]="columnDefs"
+            [defaultColDef]="defaultColDef" (gridReady)="onGridReady($event)" [rowHeight]="rowHeight"
+            [pagination]="true" [paginationPageSize]="10">
+        </ag-grid-angular>
+    </div>
+</div>
